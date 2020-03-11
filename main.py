@@ -185,7 +185,7 @@ async def merge(ctx, category):
 		)
 		i = 0
 		for textChannel in categoryObject.channels:
-			if i > 6:
+			if i > 5:
 				await archive_channel.send(embed=embed)
 				embed = discord.Embed(title="# {}".format(str(category)), description="## Created: {}".format(
 					str(datetime.datetime.now())), color=0xff0000)
@@ -198,9 +198,10 @@ async def merge(ctx, category):
 
 				for body in m:
 					channelWriteup = channelWriteup + " - " + body + "\n"
-				embed.add_field(name=str("### " + textChannel.name),
-								value=channelWriteup + "\n", inline=False)
+				embed.add_field(name=str("### " + textChannel.name),value=channelWriteup + "\n", inline=False)
 			i = i + 1
+		if i != 1:
+			await archive_channel.send(embed=embed)
 	else:
 		await ctx.send(
 			"This CTF has already been merged or something has gone very, very wrong :("
