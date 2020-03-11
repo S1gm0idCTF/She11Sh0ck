@@ -99,7 +99,6 @@ async def q(ctx, *questionTitle):
         await ctx.guild.create_text_channel(questionTitle, category=category)
     pass
 
-
 @bot.command()
 async def merge(ctx, category):
     # merging doesn't delete the originals in case of an accidental merge
