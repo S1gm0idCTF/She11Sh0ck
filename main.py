@@ -140,16 +140,25 @@ async def merge(ctx, category):
         )
     pass
 
+
 # Actual CTF commands
+
 
 @bot.command()
 async def b64Decode(ctx, string):
-	await ctx.send(base64.b64decode(string).decode("utf-8"))
+    await ctx.send(base64.b64decode(string).decode("utf-8"))
+
 
 @bot.command()
 async def b64Encode(ctx, string):
-	await ctx.send(base64.b64encode(string.encode()).decode("utf-8"))
+    await ctx.send(base64.b64encode(string.encode()).decode("utf-8"))
 
+@bot.command()
+async def binaryDecode(ctx, binary_string):
+	binary_string = binary_string.replace(" ", "")
+	print(binary_string)
+	string = ''.join(chr(int(binary_string[i*8:i*8+8], 2)) for i in range(len(binary_string)//8))
+	await ctx.send(string)
 
 ###############################################################################################
 
