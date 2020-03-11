@@ -113,8 +113,7 @@ async def Q(ctx, *questionTitle):
 		await ctx.send("Please run `!setctf [ctfname]` or `!ctf [ctfname]`first.")
 	else:
 		questionTitle = "-".join(questionTitle).lower()
-		category = discord.utils.get(
-			ctx.guild.categories, name=activeCTF.getCTF())
+		category = discord.utils.get(ctx.guild.categories, name=activeCTF.getCTF())
 		await ctx.guild.create_text_channel(questionTitle, category=category)
 		for textChannel in category.channels:
 			if textChannel.name not in activeCTF.getQs():
@@ -162,33 +161,35 @@ async def ctfQs(ctx):
 
 	await ctx.send(send)
 
+
 @bot.command()
 async def merge(ctx, category):
 	# merging doesn't delete the originals in case of an accidental merge
 	print("merging category: " + category)
 	categoryObject = discord.utils.get(ctx.guild.channels, name=category)
-	embed = discord.Embed(title="# {}".format(str(category)), description="### Created: {}".format(
-		str(datetime.datetime.now())), color=0xff0000)
+	embed = discord.Embed(
+		title="# {}".format(str(category)),
+		description="### Created: {}".format(str(datetime.datetime.now())),
+		color=0xFF0000,
+	)
 	exportWriteup = ""
-	if (
-		discord.utils.get(ctx.guild.channels, name=category + "-archive")
-		is None
-	):
+	if discord.utils.get(ctx.guild.channels, name=category + "-archive") is None:
 		await ctx.guild.create_text_channel(
 			category + "-archive",
 			category=discord.utils.get(ctx.guild.categories, name="ARCHIVE"),
 		)
 		archive_channel = bot.get_channel(
-			discord.utils.get(
-				ctx.guild.channels, name=category + "-archive"
-			).id
+			discord.utils.get(ctx.guild.channels, name=category + "-archive").id
 		)
 		i = 0
 		for textChannel in categoryObject.channels:
 			if i > 5:
 				await archive_channel.send(embed=embed)
-				embed = discord.Embed(title="# {}".format(str(category)), description="## Created: {}".format(
-					str(datetime.datetime.now())), color=0xff0000)
+				embed = discord.Embed(
+					title="# {}".format(str(category)),
+					description="## Created: {}".format(str(datetime.datetime.now())),
+					color=0xFF0000,
+				)
 				i = 0
 			if str(textChannel.type) == "text":
 				print(str(textChannel.name))
@@ -198,7 +199,11 @@ async def merge(ctx, category):
 
 				for body in m:
 					channelWriteup = channelWriteup + " - " + body + "\n"
-				embed.add_field(name=str("### " + textChannel.name),value=channelWriteup + "\n", inline=False)
+				embed.add_field(
+					name=str("### " + textChannel.name),
+					value=channelWriteup + "\n",
+					inline=False,
+				)
 			i = i + 1
 		if i != 1:
 			await archive_channel.send(embed=embed)
@@ -228,7 +233,7 @@ async def binaryDecode(ctx, binary_string):
 	binary_string = binary_string.replace(" ", "")
 	print(binary_string)
 	string = "".join(
-		chr(int(binary_string[i * 8: i * 8 + 8], 2))
+		chr(int(binary_string[i * 8 : i * 8 + 8], 2))
 		for i in range(len(binary_string) // 8)
 	)
 	await ctx.send(string)
