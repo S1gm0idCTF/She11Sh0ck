@@ -1,4 +1,9 @@
+import base64
+import string
+
 import discord
+import numpy
+import pwn
 from discord.ext import commands
 
 f = open("keys.txt", "r")
@@ -134,6 +139,16 @@ async def merge(ctx, category):
             "This CTF has already been merged or something has gone very, very wrong :("
         )
     pass
+
+# Actual CTF commands
+
+@bot.command()
+async def b64Decode(ctx, string):
+	await ctx.send(base64.b64decode(string).decode("utf-8"))
+
+@bot.command()
+async def b64Encode(ctx, string):
+	await ctx.send(base64.b64encode(string.encode()).decode("utf-8"))
 
 
 ###############################################################################################
