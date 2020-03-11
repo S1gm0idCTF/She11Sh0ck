@@ -93,6 +93,7 @@ async def q(ctx, *questionTitle):
 
 @bot.command()
 async def merge(ctx, category):
+	#merging doesn't delete the originals in case of an accidental merge
 	print("merging category: " + category)
 	category = discord.utils.get(ctx.guild.categories, name=category)
 	ctx.guild.create_text_channel("__archive", category=category)
