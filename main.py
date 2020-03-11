@@ -7,6 +7,7 @@ import discord
 import numpy
 import pwn
 from discord.ext import commands
+import datetime
 
 f = open("keys.txt", "r")
 TOKEN = f.readline().strip()
@@ -234,3 +235,5 @@ async def binaryDecode(ctx, binary_string):
 ###############################################################################################
 
 bot.run(TOKEN)
+print("test")
+
