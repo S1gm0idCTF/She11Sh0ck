@@ -164,48 +164,46 @@ async def ctfQs(ctx):
 
 @bot.command()
 async def merge(ctx, category):
-	# merging doesn't delete the originals in case of an accidental merge
-	print("merging category: " + category)
-	category = discord.utils.get(ctx.guild.categories, name=category)
-	ctx.guild.create_text_channel("__archive", category=category)
-	exportWriteup = ""
-	exportWriteup = "{}\n{}".format(
-		"## {}".format(str(category)), "### Generated: " + str(datetime.datetime.now())
-	)
-	for textChannel in category.channels:
-		exportWriteup = (
-			exportWriteup + "\n## " + str(category.name) + ": " + str(textChannel.name)
-		)
-		if str(textChannel.type) == "text" and str(textChannel.name) != "__archive":
-			messages = await textChannel.history().flatten()
-			m = [x.content for x in messages][::-1]  # reverse messages
-			for i in m:
-				exportWriteup = exportWriteup + "\n" + " - " + i
-		exportWriteup = exportWriteup + "\n---"
+    # merging doesn't delete the originals in case of an accidental merge
+    print("merging category: " + category)
+    categoryObject = discord.utils.get(ctx.guild.channels,name=category)
+    embed = discord.Embed(title="# {}".format(str(category)), description="### Created: {}".format(str(datetime.datetime.now())), color=0xff0000)
+    exportWriteup = ""
+    if (
+        discord.utils.get(ctx.guild.channels, name=category + "-archive")
+        is None
+    ):
+        await ctx.guild.create_text_channel(
+            category + "-archive",
+            category=discord.utils.get(ctx.guild.categories, name="ARCHIVE"),
+        )
+        archive_channel = bot.get_channel(
+            discord.utils.get(
+                ctx.guild.channels, name=category + "-archive"
+            ).id
+        )
+        i = 0
+        for textChannel in categoryObject.channels:
+            if i > 6:
+                await archive_channel.send(embed=embed)
+                embed = discord.Embed(title="# {}".format(str(category)), description="## Created: {}".format(str(datetime.datetime.now())), color=0xff0000)
+                i = 0
+            if str(textChannel.type) == "text":
+                print(str(textChannel.name))
+                channelWriteup = ""
+                messages = await textChannel.history().flatten()
+                m = [x.content for x in messages][::-1]  # reverse messages
 
-	print(activeCTF.getCTF() + "-archive")
-	print(discord.utils.get(ctx.guild.channels, name=activeCTF.getCTF() + "-archive"))
-
-	if (
-		discord.utils.get(ctx.guild.channels, name=activeCTF.getCTF() + "-archive")
-		is None
-	):
-		await ctx.guild.create_text_channel(
-			activeCTF.getCTF() + "-archive",
-			category=discord.utils.get(ctx.guild.categories, name="ARCHIVE"),
-		)
-		archive_channel = bot.get_channel(
-			discord.utils.get(
-				ctx.guild.channels, name=activeCTF.getCTF() + "-archive"
-			).id
-		)
-		await archive_channel.send(exportWriteup)
-
-	else:
-		await ctx.send(
-			"This CTF has already been merged or something has gone very, very wrong :("
-		)
-	pass
+                for body in m:
+                    channelWriteup = channelWriteup + " - " + body + "\n"
+                embed.add_field(name=str("### " + textChannel.name), value=channelWriteup + "\n", inline=False)
+            i = i + 1
+    else:
+        await ctx.send(
+            "This CTF has already been merged or something has gone very, very wrong :("
+        )
+    exportWriteup = ""
+    pass
 
 
 # Actual CTF commands
