@@ -2,10 +2,10 @@ import base64
 import string
 
 import discord
-import numpy
-import pwn
+#import numpy
+#import pwn
 from discord.ext import commands
-
+import datetime
 f = open("keys.txt", "r")
 TOKEN = f.readline().strip()
 serverID = int(f.readline().strip())
@@ -106,15 +106,16 @@ async def merge(ctx, category):
     print("merging category: " + category)
     category = discord.utils.get(ctx.guild.categories, name=category)
     ctx.guild.create_text_channel("__archive", category=category)
-    file = ""
+    exportWriteup = ""
+    exportWriteup = "{}\n{}".format("## {}".format(str(category)), "### Generated: " + str(datetime.datetime.now()))
     for textChannel in category.channels:
-        file = file + "\n# " + str(category.name) + ": " + str(textChannel.name)
+        exportWriteup = exportWriteup + "\n## " + str(category.name) + ": " + str(textChannel.name)
         if str(textChannel.type) == "text" and str(textChannel.name) != "__archive":
             messages = await textChannel.history().flatten()
             m = [x.content for x in messages][::-1]  # reverse messages
             for i in m:
-                file = file + "\n" + " - " + i
-        file = file + "\n---"
+                exportWriteup = exportWriteup + "\n" + " - " + i
+        exportWriteup = exportWriteup + "\n---"
 
     print(activeCTF.getCTF() + "-archive")
     print(discord.utils.get(ctx.guild.channels, name=activeCTF.getCTF() + "-archive"))
@@ -132,7 +133,7 @@ async def merge(ctx, category):
                 ctx.guild.channels, name=activeCTF.getCTF() + "-archive"
             ).id
         )
-        await archive_channel.send(file)
+        await archive_channel.send(exportWriteup)
 
     else:
         await ctx.send(
@@ -163,3 +164,4 @@ async def binaryDecode(ctx, binary_string):
 ###############################################################################################
 
 bot.run(TOKEN)
+print('test')
