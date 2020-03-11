@@ -2,8 +2,8 @@ import base64
 import string
 
 import discord
-#import numpy
-#import pwn
+import numpy
+import pwn
 from discord.ext import commands
 import datetime
 f = open("keys.txt", "r")
