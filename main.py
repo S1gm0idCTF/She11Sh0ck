@@ -234,4 +234,3 @@ async def binaryDecode(ctx, binary_string):
 ###############################################################################################
 
 bot.run(TOKEN)
-print("test")
