@@ -1,11 +1,12 @@
 import base64
+import datetime
 import string
 
 import discord
 import numpy
 import pwn
 from discord.ext import commands
-import datetime
+
 f = open("keys.txt", "r")
 TOKEN = f.readline().strip()
 serverID = int(f.readline().strip())
@@ -107,9 +108,13 @@ async def merge(ctx, category):
     category = discord.utils.get(ctx.guild.categories, name=category)
     ctx.guild.create_text_channel("__archive", category=category)
     exportWriteup = ""
-    exportWriteup = "{}\n{}".format("## {}".format(str(category)), "### Generated: " + str(datetime.datetime.now()))
+    exportWriteup = "{}\n{}".format(
+        "## {}".format(str(category)), "### Generated: " + str(datetime.datetime.now())
+    )
     for textChannel in category.channels:
-        exportWriteup = exportWriteup + "\n## " + str(category.name) + ": " + str(textChannel.name)
+        exportWriteup = (
+            exportWriteup + "\n## " + str(category.name) + ": " + str(textChannel.name)
+        )
         if str(textChannel.type) == "text" and str(textChannel.name) != "__archive":
             messages = await textChannel.history().flatten()
             m = [x.content for x in messages][::-1]  # reverse messages
@@ -154,14 +159,19 @@ async def b64Decode(ctx, string):
 async def b64Encode(ctx, string):
     await ctx.send(base64.b64encode(string.encode()).decode("utf-8"))
 
+
 @bot.command()
 async def binaryDecode(ctx, binary_string):
-	binary_string = binary_string.replace(" ", "")
-	print(binary_string)
-	string = ''.join(chr(int(binary_string[i*8:i*8+8], 2)) for i in range(len(binary_string)//8))
-	await ctx.send(string)
+    binary_string = binary_string.replace(" ", "")
+    print(binary_string)
+    string = "".join(
+        chr(int(binary_string[i * 8 : i * 8 + 8], 2))
+        for i in range(len(binary_string) // 8)
+    )
+    await ctx.send(string)
+
 
 ###############################################################################################
 
 bot.run(TOKEN)
-print('test')
+print("test")
