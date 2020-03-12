@@ -5,7 +5,6 @@ import time
 
 import discord
 import numpy
-import pwn
 from discord.ext import commands
 import datetime
 
@@ -126,8 +125,6 @@ async def Q(ctx, *questionTitle):
 					activeCTF.addQ(textChannel.name, False)
 		print(activeCTF.getQs())
 	pass
-
-print("test")
 
 @bot.command()
 async def updateQs(ctx):
