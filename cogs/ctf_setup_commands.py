@@ -33,7 +33,7 @@ class CTFSetup(commands.Cog):
 
 	@commands.command()
 	@commands.guild_only()
-	async def currentctf(self, ctx):
+	async def currentCTF(self, ctx):
 		if self.activeCTF.getCTF() == "":
 			await ctx.send(
 				"Please run `!setctf [ctfname]` or `!createctf [ctfname]`first."
@@ -44,7 +44,7 @@ class CTFSetup(commands.Cog):
 
 	@commands.command()
 	@commands.guild_only()
-	async def setctf(self, ctx, ctfname):
+	async def setCTF(self, ctx, ctfname):
 		print("setting ctf: " + ctfname.lower())
 		category = discord.utils.get(ctx.guild.categories, name=ctfname.lower())
 		# print(category)
@@ -58,7 +58,7 @@ class CTFSetup(commands.Cog):
 
 	@commands.command()
 	@commands.guild_only()
-	async def createctf(self, ctx, *ctfname):
+	async def createCTF(self, ctx, *ctfname):
 		ctfname = "-".join(ctfname).lower()
 		print("creating CTF: " + ctfname)
 		if not discord.utils.get(ctx.guild.categories, name=ctfname):
@@ -68,12 +68,12 @@ class CTFSetup(commands.Cog):
 			await ctx.send("A CTF with this name already exists")
 		pass
 
-	@commands.command()
+	@commands.command(name = "addQ")
 	@commands.guild_only()
 	async def Q(self, ctx, *questionTitle):
 		print("adding question")
 		if self.activeCTF.getCTF() == "":
-			await ctx.send("Please run `!setctf [ctfname]` or `!ctf [ctfname]`first.")
+			await ctx.send("Please run `!ctf setCTF[ctfname]` or `!ctf createCTF [ctfname]`first.")
 		else:
 			questionTitle = "-".join(questionTitle).lower()
 			category = discord.utils.get(
@@ -93,6 +93,7 @@ class CTFSetup(commands.Cog):
 		pass
 
 	@commands.command()
+	@commands.guild_only()
 	async def updateQs(self, ctx):
 		category = discord.utils.get(ctx.guild.categories, name=self.activeCTF.getCTF())
 		for textChannel in category.channels:
