@@ -24,7 +24,11 @@ def get_prefix(bot, message):
 	return commands.when_mentioned_or(*prefixes)(bot, message)
 
 
-initial_extensions = ["cogs.archive", "cogs.ctf_setup", "cogs.ctf_commands"]
+initial_extensions = [
+	"cogs.archive",
+	"cogs.ctf_setup_commands",
+	"cogs.ctf_utility_commands",
+]
 
 bot = commands.Bot(command_prefix=get_prefix, description="The cog enabled rewrite")
 
