@@ -4,7 +4,7 @@ import discord
 from discord.ext import commands
 
 
-class ctfUtility(commands.Cog):
+class CTFUtility(commands.Cog):
 	def __init__(self, bot):
 		self.bot = bot
 
@@ -31,4 +31,4 @@ class ctfUtility(commands.Cog):
 
 
 def setup(bot):
-	bot.add_cog(ctfUtility(bot))
+	bot.add_cog(CTFUtility(bot))

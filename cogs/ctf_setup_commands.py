@@ -26,7 +26,7 @@ class CTF:
 		self.QDict = {}
 
 
-class ctfSetup(commands.Cog):
+class CTFSetup(commands.Cog):
 	def __init__(self, bot, activeCTF):
 		self.bot = bot
 		self.activeCTF = activeCTF
@@ -125,5 +125,5 @@ class ctfSetup(commands.Cog):
 
 
 def setup(bot):
-	bot.add_cog(ctfSetup(bot, CTF()))
+	bot.add_cog(CTFSetup(bot, CTF()))
 

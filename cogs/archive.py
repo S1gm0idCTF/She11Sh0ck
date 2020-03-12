@@ -4,7 +4,7 @@ import discord
 from discord.ext import commands
 
 
-class archiveCog(commands.Cog):
+class ArchiveCog(commands.Cog):
 	def __init__(self, bot):
 		self.bot = bot
 
@@ -63,4 +63,4 @@ class archiveCog(commands.Cog):
 
 
 def setup(bot):
-	bot.add_cog(archiveCog(bot))
+	bot.add_cog(ArchiveCog(bot))
