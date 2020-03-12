@@ -127,6 +127,7 @@ async def Q(ctx, *questionTitle):
 		print(activeCTF.getQs())
 	pass
 
+print("test")
 
 @bot.command()
 async def updateQs(ctx):
