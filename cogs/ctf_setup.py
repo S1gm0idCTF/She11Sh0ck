@@ -1,6 +1,7 @@
 import discord
 from discord.ext import commands
 
+
 class CTF:
 	def __init__(self):
 		self.activeCTF = ""
@@ -34,11 +35,12 @@ class ctfSetup(commands.Cog):
 	@commands.guild_only()
 	async def currentctf(self, ctx):
 		if self.activeCTF.getCTF() == "":
-			await ctx.send("Please run `!setctf [ctfname]` or `!createctf [ctfname]`first.")
+			await ctx.send(
+				"Please run `!setctf [ctfname]` or `!createctf [ctfname]`first."
+			)
 		else:
 			await ctx.send("`{}`, is the selected CTF.".format(self.activeCTF.getCTF()))
 		pass
-
 
 	@commands.command()
 	@commands.guild_only()
@@ -54,7 +56,6 @@ class ctfSetup(commands.Cog):
 			await ctx.send("That ctf doesn't exist :(")
 		pass
 
-
 	@commands.command()
 	@commands.guild_only()
 	async def createctf(self, ctx, *ctfname):
@@ -67,7 +68,6 @@ class ctfSetup(commands.Cog):
 			await ctx.send("A CTF with this name already exists")
 		pass
 
-
 	@commands.command()
 	@commands.guild_only()
 	async def Q(self, ctx, *questionTitle):
@@ -76,7 +76,9 @@ class ctfSetup(commands.Cog):
 			await ctx.send("Please run `!setctf [ctfname]` or `!ctf [ctfname]`first.")
 		else:
 			questionTitle = "-".join(questionTitle).lower()
-			category = discord.utils.get(ctx.guild.categories, name=self.activeCTF.getCTF())
+			category = discord.utils.get(
+				ctx.guild.categories, name=self.activeCTF.getCTF()
+			)
 			await ctx.guild.create_text_channel(questionTitle, category=category)
 			for textChannel in category.channels:
 				if textChannel.name not in self.activeCTF.getQs():
@@ -89,7 +91,6 @@ class ctfSetup(commands.Cog):
 						self.activeCTF.addQ(textChannel.name, False)
 			print(self.activeCTF.getQs())
 		pass
-
 
 	@commands.command()
 	async def updateQs(self, ctx):
@@ -108,8 +109,6 @@ class ctfSetup(commands.Cog):
 				else:
 					self.activeCTF.updateQ(textChannel.name, False)
 
-
-
 	@commands.command()
 	@commands.guild_only()
 	async def ctfQs(self, ctx):
@@ -123,6 +122,7 @@ class ctfSetup(commands.Cog):
 				send += key + " | " + "unsolved\n"
 
 		await ctx.send(send)
+
 
 def setup(bot):
 	bot.add_cog(ctfSetup(bot, CTF()))
