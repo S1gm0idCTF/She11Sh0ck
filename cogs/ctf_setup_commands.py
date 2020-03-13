@@ -3,6 +3,7 @@ import json
 import discord
 from discord.ext import commands
 
+
 class CTF:
 	def __init__(self):
 		self.activeCTF = ""
@@ -32,14 +33,19 @@ class CTFSetup(commands.Cog):
 		self.bot = bot
 		self.activeCTF = activeCTF
 
+	async def isCTFActive(self, ctx):
+		if self.activeCTF.getCTF() == "":
+			await ctx.send(
+				"Please run `!ctf setCTF [ctfname]` or `!ctf createCTF[ctfname]`first."
+			)
+			return False
+		else:
+			return True
+
 	@commands.command()
 	@commands.guild_only()
 	async def currentCTF(self, ctx):
-		if self.activeCTF.getCTF() == "":
-			await ctx.send(
-				"Please run `!setctf [ctfname]` or `!createctf [ctfname]`first."
-			)
-		else:
+		if await self.isCTFActive(ctx):
 			await ctx.send("`{}`, is the selected CTF.".format(self.activeCTF.getCTF()))
 		pass
 
@@ -69,13 +75,11 @@ class CTFSetup(commands.Cog):
 			await ctx.send("A CTF with this name already exists")
 		pass
 
-	@commands.command(name = "addQ")
+	@commands.command(name="addQ")
 	@commands.guild_only()
 	async def Q(self, ctx, *questionTitle):
 		print("adding question")
-		if self.activeCTF.getCTF() == "":
-			await ctx.send("Please run `!ctf setCTF[ctfname]` or `!ctf createCTF [ctfname]`first.")
-		else:
+		if self.isCTFActive(ctx):
 			questionTitle = "-".join(questionTitle).lower()
 			category = discord.utils.get(
 				ctx.guild.categories, name=self.activeCTF.getCTF()
@@ -106,10 +110,25 @@ class CTFSetup(commands.Cog):
 				else:
 					self.activeCTF.addQ(textChannel.name, False)
 			else:
-				if "SOLVED" in solveCheck:
+				print(textChannel.name)
+				print(self.activeCTF.getQs()[textChannel.name])
+				if (
+					"SOLVED" in solveCheck
+					or self.activeCTF.getQs()[textChannel.name] == True
+				):
 					self.activeCTF.updateQ(textChannel.name, True)
 				else:
 					self.activeCTF.updateQ(textChannel.name, False)
+
+	@commands.command()
+	@commands.guild_only()
+	async def markSolved(self, ctx, Q):
+		category = discord.utils.get(ctx.guild.categories, name=self.activeCTF.getCTF())
+		if Q in [channel.name for channel in category.channels]:
+			self.activeCTF.updateQ(Q, True)
+		else:
+			await ctx.send("This question does not exist")
+		pass
 
 	@commands.command()
 	@commands.guild_only()
@@ -128,4 +147,3 @@ class CTFSetup(commands.Cog):
 
 def setup(bot):
 	bot.add_cog(CTFSetup(bot, CTF()))
-
