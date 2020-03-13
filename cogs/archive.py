@@ -1,6 +1,7 @@
 import discord
 from discord.ext import commands
 from datetime import datetime
+
 class betterEmbeds():
     def __init__(self, category):
         self.embed = discord.Embed(title="# {}".format(str(category)),description="### Created: {}".format(str(datetime.now())),color=0xFF0000)
@@ -8,7 +9,7 @@ class betterEmbeds():
         self.length = 0 
         self.objectCount = 0 
 
-    def test_embed(self, bodyLength):
+    async def test_embed(self, bodyLength):
         print(1)
         discordConstraints = {"maxCharCount" : 6000, "maxFieldCount": 10}
         if (self.length + bodyLength <= discordConstraints["maxCharCount"]) and (self.objectCount + 1 <= discordConstraints['maxFieldCount']): 
@@ -16,7 +17,7 @@ class betterEmbeds():
         else:
             return False
 
-    def reInitialize(self,textChannelName):
+    async def reInitialize(self,textChannelName):
         self.embed = discord.Embed(title="# {}".format(str(textChannelName)),description="### Created: {}".format(str(datetime.now())),color=0xFF0000)
         self.length = 0
         self.objectCount = 0
@@ -28,7 +29,9 @@ class betterEmbeds():
             if self.destination == '':
                 print("I don't know where to send this :/")
             else:
-                self.send_message()
+                print("test")
+                await send_message()
+                print("--"*5)
                 self.reInitialize(str(textChannelName))
         self.length = self.length + len(body)
         self.objectCount = self.objectCount + 1 
@@ -39,9 +42,8 @@ class betterEmbeds():
         self.destination = destination
 
     async def send_message(self):
-        self.destination.send(embed=self.embed)
-        
-
+        await self.destination.send(embed=self.embed)
+        await self.destination.send("test")
 
 class archiveCog(commands.Cog):
     def __init__(self, bot):
@@ -66,21 +68,20 @@ class archiveCog(commands.Cog):
         await embed.send_message()
         i = 0
         for textChannel in categoryObject.channels:
-            if i > 5:
-                embed.send_message()
+            if i > 9:
+                await embed.send_message()
                 i = 0
             if str(textChannel.type) == "text":
                 print(str(textChannel.name))
                 channelWriteup = ""
                 messages = await textChannel.history().flatten() #fetch all messages in channel.
                 m = [x.content for x in messages][::-1]  # reverse messages
-
                 for body in m:
                     channelWriteup = channelWriteup + " - " + body + "\n"
-                embed.add_field(textChannel.name, channelWriteup)
+                await embed.add_field(textChannel.name, channelWriteup)
             i = i + 1
         if i != 1:
-            embed.send_message()
+            await embed.send_message()
         #else:
         await ctx.send(
             "This CTF has already been merged or something has gone very, very wrong :("
