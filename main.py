@@ -1,5 +1,6 @@
 import sys
 import traceback
+import json
 
 import discord
 from discord.ext import commands
@@ -46,6 +47,5 @@ async def on_ready():
 
 	# Changes our bots Playing Status. type=1(streaming) for a standard game you could remove type and url.
 	print(f"Successfully logged in and booted...!")
-
 
 bot.run(TOKEN, bot=True)

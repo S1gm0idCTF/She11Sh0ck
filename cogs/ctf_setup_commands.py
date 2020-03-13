@@ -1,6 +1,7 @@
+import json
+
 import discord
 from discord.ext import commands
-
 
 class CTF:
 	def __init__(self):
