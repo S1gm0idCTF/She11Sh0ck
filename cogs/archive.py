@@ -2,6 +2,33 @@ import test
 import discord
 from discord.ext import commands
 from datetime import datetime
+async def splitTextMessage(message, textChannel,embed):
+	i = -1
+	message = message['content']
+	while len(message) > 997:
+		i = message[0:995].rfind('\n')
+		if i == -1:
+			i = message[0:995].rfind(' ')
+		if i == -1:
+			i = 950
+		print("SENDING: {}".format(message[0:i]))
+		await embed.add_field(str(textChannel.name), message[0:i])					
+		message = message[i:]
+	await embed.add_field(str(textChannel.name), message)
+
+async def splitCodeMessage(message, textChannel, embed):
+	i = -1
+	message = message['content']
+	while len(message) > 997:
+		i = message[0:995].rfind('\n')
+		if i == -1:
+			i = message[0:995].rfind(' ')
+		if i == -1:
+			i = 950
+		print("SENDING: {}".format(message[0:i]))
+		await embed.add_field(str(textChannel.name), "```{}```".format(message[0:i]))
+		message = message[i:]
+	await embed.add_field(str(textChannel.name), "```{}```".format(message))
 
 def embedsObj(content, msgType, attachment=None):
     acceptableMsgTypes = ['text', 'codeblock', 'link', 'file-img', 'file-other']
@@ -93,7 +120,7 @@ class betterEmbeds():
 class archiveCog(commands.Cog):
 	def __init__(self, bot):
 		self.bot = bot
-	
+
 	@commands.command()
 	@commands.guild_only()
 	async def archive(self, ctx, category):
@@ -103,45 +130,27 @@ class archiveCog(commands.Cog):
 		
 		embed = betterEmbeds(str(category))
 
-		exportWriteup = ""
 		if discord.utils.get(ctx.guild.channels, name=category + "-archive") is None:
 			await ctx.guild.create_text_channel(category + "-archive",category=discord.utils.get(ctx.guild.categories, name="ARCHIVE"))
-		archive_channel =  self.bot.get_channel(discord.utils.get(ctx.guild.channels, name=category + "-archive").id)    
-		await embed.add_destination(archive_channel)
-		for textChannel in categoryObject.channels:
-			if str(textChannel.type) == "text":
-				print(str(textChannel.name))
-				channelWriteup = ""
-				messages = await textChannel.history().flatten()
-				msgObject = processMessages(messages).getMessages()
-				for m in msgObject:
-					if m['type'] == "codeblock":
-						message = m['content']
-						while len(message) > 997:
-							i = (message[0:995].rfind('\n'))
-							if i == -1:
-								i = 950
-							print(message[0:i])
-							await embed.add_field(str(textChannel.name) + ": " + "Code", "```\n"+message[0:i]+"\n```")
-							message = message[i:]
-						await embed.add_field(str(textChannel.name) + ": " + "Code", "```\n"+message+"\n```")
-					elif m['type'] == "text":
-						message = m['content']
-						while len(message) > 997:
-							i = (message[0:995].rfind('\n'))
-							if i == -1:
-								i = 950
-							print(message[0:i])
-							await embed.add_field(str(textChannel.name), message[0:i])
-							message = message[i:]
-						await embed.add_field(str(textChannel.name), message)
-					elif m['type'] == "file-img":
-						await embed.add_field(str(textChannel.name), f"![{m['attachment']}]")
-		if embed.length > 0:
-			await embed.send_message()
-		#else:
-			#await ctx.send("This CTF has already been merged or something has gone very, very wrong :(")
-		#pass
+			archive_channel =  self.bot.get_channel(discord.utils.get(ctx.guild.channels, name=category + "-archive").id)    
+			await embed.add_destination(archive_channel)
+			for textChannel in categoryObject.channels:
+				if str(textChannel.type) == "text":
+					print(str(textChannel.name))
+					messages = await textChannel.history().flatten()
+					msgObject = processMessages(messages).getMessages()
+					for m in msgObject:
+						if m['type'] == "codeblock":
+							await splitCodeMessage(m, textChannel, embed)
+						elif m['type'] == "text":
+							await splitTextMessage(m, textChannel, embed)
+						elif m['type'] == "file-img":
+							await embed.add_field(str(textChannel.name), f"![{m['attachment']}]")
+			if embed.length > 0:
+				await embed.send_message()
+		else:
+			await ctx.send("This CTF has already been merged or something has gone very, very wrong :(")
+		pass
 
 def setup(bot):
 	bot.add_cog(archiveCog(bot))
