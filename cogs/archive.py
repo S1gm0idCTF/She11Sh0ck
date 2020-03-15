@@ -126,13 +126,13 @@ class archiveCog(commands.Cog):
 	async def archive(self, ctx, category):
 	# merging doesn't delete the originals in case of an accidental merge
 		print("[JOB START]: MERGING" + category.upper())
-		categoryObject = discord.utils.get(ctx.guild.channels, name=str(category))
+		categoryObject = discord.utils.get(ctx.guild.channels, name=str(category.lower()))
 		
 		embed = betterEmbeds(str(category))
 
-		if discord.utils.get(ctx.guild.channels, name=category + "-archive") is None:
+		if discord.utils.get(ctx.guild.channels, name=str(category.lower()) + "-archive") is None:
 			await ctx.guild.create_text_channel(category + "-archive",category=discord.utils.get(ctx.guild.categories, name="ARCHIVE"))
-			archive_channel =  self.bot.get_channel(discord.utils.get(ctx.guild.channels, name=category + "-archive").id)    
+			archive_channel =  self.bot.get_channel(discord.utils.get(ctx.guild.channels, name=str(category.lower()) + "-archive").id)    
 			await embed.add_destination(archive_channel)
 			for textChannel in categoryObject.channels:
 				if str(textChannel.type) == "text":
