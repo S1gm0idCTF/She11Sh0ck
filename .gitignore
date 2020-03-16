@@ -3,3 +3,4 @@ keys.txt
 test.py
 server_settings.json
 __pycache__/
+*.pyc
