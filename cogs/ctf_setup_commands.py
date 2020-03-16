@@ -10,14 +10,14 @@ class CTFSetup(commands.Cog):
 
 	@commands.command()
 	@commands.guild_only()
-	async def currentCTF(self, ctx):
+	async def currentctf(self, ctx):
 		if await self.getCTF(ctx):
 			await ctx.send("`{}`, is the selected CTF.".format(await self.getCTF(ctx)))
 		pass
 
 	@commands.command()
 	@commands.guild_only()
-	async def setCTF(self, ctx, ctfname):
+	async def setctf(self, ctx, ctfname):
 		print("setting ctf: " + ctfname.lower())
 		category = discord.utils.get(ctx.guild.categories, name=ctfname.lower())
 		# print(category)
@@ -46,7 +46,7 @@ class CTFSetup(commands.Cog):
 
 	@commands.command()
 	@commands.guild_only()
-	async def createCTF(self, ctx, *ctfname):
+	async def createctf(self, ctx, *ctfname):
 		ctfname = "-".join(ctfname).lower()
 		with open("server_config.json", "r") as f:
 				settings = json.load(f)
