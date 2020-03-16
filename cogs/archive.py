@@ -1,44 +1,6 @@
-import test
 import discord
 from discord.ext import commands
 from datetime import datetime
-async def splitTextMessage(message, textChannel,embed):
-	i = -1
-	message = message['content']
-	while len(message) > 997:
-		i = message[0:995].rfind('\n')
-		if i == -1:
-			i = message[0:995].rfind(' ')
-		if i == -1:
-			i = 950
-		print("SENDING: {}".format(message[0:i]))
-		await embed.add_field(str(textChannel.name), message[0:i])					
-		message = message[i:]
-	await embed.add_field(str(textChannel.name), message)
-
-async def splitCodeMessage(message, textChannel, embed):
-	i = -1
-	message = message['content']
-	while len(message) > 997:
-		i = message[0:995].rfind('\n')
-		if i == -1:
-			i = message[0:995].rfind(' ')
-		if i == -1:
-			i = 950
-		print("SENDING: {}".format(message[0:i]))
-		await embed.add_field(str(textChannel.name), "```{}```".format(message[0:i]))
-		message = message[i:]
-	await embed.add_field(str(textChannel.name), "```{}```".format(message))
-
-def embedsObj(content, msgType, attachment=None):
-    acceptableMsgTypes = ['text', 'codeblock', 'link', 'file-img', 'file-other']
-    obj = {}
-    obj["content"] = content
-    if msgType in acceptableMsgTypes:
-        obj["type"] = msgType
-    if attachment != None:
-        obj["attachment"] = attachment
-    return obj
 
 class processMessages():
     def __init__(self, messages):
@@ -84,7 +46,7 @@ class betterEmbeds():
 		self.objectCount = 0 
 
 	async def test_embed(self, bodyLength):
-		if (self.length + bodyLength >= 6000) or (self.objectCount + 1 >= 12): 
+		if (self.length + bodyLength >= 5750) or (self.objectCount + 1 >= 12): 
 			return False
 		else:
 			return True
@@ -117,6 +79,44 @@ class betterEmbeds():
 	async def send_message(self):
 		await self.destination.send(embed=self.embed)
 
+async def splitTextMessage(message, textChannel,embed):
+	i = -1
+	message = message['content']
+	while len(message) > 997:
+		i = message[0:995].rfind('\n')
+		if i == -1:
+			i = message[0:995].rfind(' ')
+		if i == -1:
+			i = 950
+		print("SENDING: {}".format(message[0:i]))
+		await embed.add_field(str(textChannel.name), message[0:i])					
+		message = message[i:]
+	await embed.add_field(str(textChannel.name), message)
+
+async def splitCodeMessage(message, textChannel, embed):
+	i = -1
+	message = message['content']
+	while len(message) > 997:
+		i = message[0:995].rfind('\n')
+		if i == -1:
+			i = message[0:995].rfind(' ')
+		if i == -1:
+			i = 950
+		print("SENDING: {}".format(message[0:i]))
+		await embed.add_field(str(textChannel.name), "```{}```".format(message[0:i]))
+		message = message[i:]
+	await embed.add_field(str(textChannel.name), "```{}```".format(message))
+
+def embedsObj(content, msgType, attachment=None):
+    acceptableMsgTypes = ['text', 'codeblock', 'link', 'file-img', 'file-other']
+    obj = {}
+    obj["content"] = content
+    if msgType in acceptableMsgTypes:
+        obj["type"] = msgType
+    if attachment != None:
+        obj["attachment"] = attachment
+    return obj
+
 class archiveCog(commands.Cog):
 	def __init__(self, bot):
 		self.bot = bot
@@ -127,11 +127,9 @@ class archiveCog(commands.Cog):
 	# merging doesn't delete the originals in case of an accidental merge
 		print("[JOB START]: MERGING" + category.upper())
 		categoryObject = discord.utils.get(ctx.guild.channels, name=str(category.lower()))
-		
 		embed = betterEmbeds(str(category))
-
 		if discord.utils.get(ctx.guild.channels, name=str(category.lower()) + "-archive") is None:
-			await ctx.guild.create_text_channel(category + "-archive",category=discord.utils.get(ctx.guild.categories, name="ARCHIVE"))
+			await ctx.guild.create_text_channel(category.lower() + "-archive",category=discord.utils.get(ctx.guild.categories, name="ARCHIVE"))
 			archive_channel =  self.bot.get_channel(discord.utils.get(ctx.guild.channels, name=str(category.lower()) + "-archive").id)    
 			await embed.add_destination(archive_channel)
 			for textChannel in categoryObject.channels:
@@ -145,7 +143,7 @@ class archiveCog(commands.Cog):
 						elif m['type'] == "text":
 							await splitTextMessage(m, textChannel, embed)
 						elif m['type'] == "file-img":
-							await embed.add_field(str(textChannel.name), f"![{m['attachment']}]")
+							await embed.add_field(str(textChannel.name), "![{}]".format(m['attachment']))
 			if embed.length > 0:
 				await embed.send_message()
 		else:
@@ -153,4 +151,4 @@ class archiveCog(commands.Cog):
 		pass
 
 def setup(bot):
-	bot.add_cog(archiveCog(bot))
+    bot.add_cog(archiveCog(bot))
