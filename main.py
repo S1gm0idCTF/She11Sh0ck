@@ -48,7 +48,28 @@ async def on_ready():
 	# Changes our bots Playing Status. type=1(streaming) for a standard game you could remove type and url.
 	print(f"Successfully logged in and booted...!")
 
+	with open("server_config.json", "r") as f:
+		settings = json.load(f)
+	
+	print(settings)
+
+	for guild in bot.guilds:
+		if str(guild.id) not in settings:
+			print(guild.id)
+			settings[str(guild.id)] = {}
+	
+	with open("server_config.json", "w") as f:
+		json.dump(settings, f, indent = 4)
+
 @bot.event
 async def on_guild_join(guild):
-	pass
+	with open("server_config.json", "r") as f:
+		settings = json.load(f)
+	
+	settings[str(guild.id)] = {}
+	
+	with open("server_config.json", "w") as f:
+		json.dump(settings, f, indent = 4)
+
+
 bot.run(TOKEN, bot=True)
