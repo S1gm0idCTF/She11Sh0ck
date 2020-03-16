@@ -13,6 +13,8 @@ class CTFSetup(commands.Cog):
 	async def currentctf(self, ctx):
 		if await self.getctf(ctx):
 			await ctx.send("`{}`, is the selected CTF.".format(await self.getctf(ctx)))
+		else:
+			await ctx.send("There is no CTF currently selected. Please select one with !ctf setctf <name> or create one with !ctf createctf <name>")
 		pass
 
 	@commands.command()
