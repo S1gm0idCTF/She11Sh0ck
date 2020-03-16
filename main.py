@@ -48,4 +48,7 @@ async def on_ready():
 	# Changes our bots Playing Status. type=1(streaming) for a standard game you could remove type and url.
 	print(f"Successfully logged in and booted...!")
 
+@bot.event
+async def on_guild_join(guild):
+	pass
 bot.run(TOKEN, bot=True)
