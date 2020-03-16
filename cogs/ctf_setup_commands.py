@@ -11,8 +11,8 @@ class CTFSetup(commands.Cog):
 	@commands.command()
 	@commands.guild_only()
 	async def currentctf(self, ctx):
-		if await self.getCTF(ctx):
-			await ctx.send("`{}`, is the selected CTF.".format(await self.getCTF(ctx)))
+		if await self.getctf(ctx):
+			await ctx.send("`{}`, is the selected CTF.".format(await self.getctf(ctx)))
 		pass
 
 	@commands.command()
@@ -37,7 +37,7 @@ class CTFSetup(commands.Cog):
 			await ctx.send("That ctf doesn't exist :(")
 		pass
 
-	async def getCTF(self, ctx):
+	async def getctf(self, ctx):
 		with open("server_config.json", "r") as f:
 				settings = json.load(f)
 		for key in settings[str(ctx.guild.id)]:
@@ -59,7 +59,7 @@ class CTFSetup(commands.Cog):
 			with open("server_config.json", "w") as f:
 				json.dump(settings, f, indent = 4)
 
-			await self.setCTF(ctx, ctfname)
+			await self.setctf(ctx, ctfname)
 		else:
 			await ctx.send("A CTF with this name already exists")
 		pass
@@ -71,22 +71,22 @@ class CTFSetup(commands.Cog):
 		with open("server_config.json", "r") as f:
 			settings = json.load(f)
 		questionTitle = "-".join(questionTitle).lower()
-		if questionTitle not in settings[str(ctx.guild.id)][await self.getCTF(ctx)]["questions"]:
+		if questionTitle not in settings[str(ctx.guild.id)][await self.getctf(ctx)]["questions"]:
 			category = discord.utils.get(
-				ctx.guild.categories, name= await self.getCTF(ctx)
+				ctx.guild.categories, name= await self.getctf(ctx)
 			)
 			await ctx.guild.create_text_channel(questionTitle, category=category)
 
 			
 			for textChannel in category.channels:
-				if textChannel.name not in settings[str(ctx.guild.id)][await self.getCTF(ctx)]["questions"]:
+				if textChannel.name not in settings[str(ctx.guild.id)][await self.getctf(ctx)]["questions"]:
 					solveCheck = await textChannel.history().flatten()
 					solveCheck = [x.content for x in solveCheck]
 					print(solveCheck)
 					if "SOLVED" in solveCheck:
-						settings[str(ctx.guild.id)][await self.getCTF(ctx)]["questions"][questionTitle] = True
+						settings[str(ctx.guild.id)][await self.getctf(ctx)]["questions"][questionTitle] = True
 					else:
-						settings[str(ctx.guild.id)][await self.getCTF(ctx)]["questions"][questionTitle] = False
+						settings[str(ctx.guild.id)][await self.getctf(ctx)]["questions"][questionTitle] = False
 			with open("server_config.json", "w") as f:
 				json.dump(settings, f, indent = 4)
 		else:
@@ -100,8 +100,8 @@ class CTFSetup(commands.Cog):
 		with open("server_config.json", "r") as f:
 				settings = json.load(f)
 
-		if Q in settings[str(ctx.guild.id)][await self.getCTF(ctx)]["questions"]:
-			settings[str(ctx.guild.id)][await self.getCTF(ctx)]["questions"][Q] = True
+		if Q in settings[str(ctx.guild.id)][await self.getctf(ctx)]["questions"]:
+			settings[str(ctx.guild.id)][await self.getctf(ctx)]["questions"][Q] = True
 			
 			with open("server_config.json", "w") as f:
 				json.dump(settings, f, indent = 4)
@@ -117,8 +117,8 @@ class CTFSetup(commands.Cog):
 		with open("server_config.json", "r") as f:
 				settings = json.load(f)
 
-		for key in settings[str(ctx.guild.id)][await self.getCTF(ctx)]["questions"]:
-			if settings[str(ctx.guild.id)][await self.getCTF(ctx)]["questions"][key] == True:
+		for key in settings[str(ctx.guild.id)][await self.getctf(ctx)]["questions"]:
+			if settings[str(ctx.guild.id)][await self.getctf(ctx)]["questions"][key] == True:
 				send += key + " | " + "SOLVED!!!\n"
 			else:
 				send += key + " | " + "unsolved\n"
