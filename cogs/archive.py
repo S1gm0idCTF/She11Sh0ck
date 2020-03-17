@@ -24,17 +24,11 @@ class processMessages():
 				if codeblockIndex[0] != 0:
 					#if the there's whitespace between first message, and `
 					formattedMessages.append(embedsObj(message[0:(codeblockIndex[0]-1)],"text"))
-					print("t:" + str(message[0:(codeblockIndex[0]-1)]))
+					#print("t:" + str(message[0:(codeblockIndex[0]-1)]))
 				while len(codeblockIndex) > 1:
-					#acceptableProgrammingLanguages = ["python", "md", "javascript", "js"]
-					
-					print(".{}.".format(message[codeblockIndex[0]:message[codeblockIndex[0]].find(" ")-1]))
-					print(".{}.".format(len(message[codeblockIndex[0]:message[codeblockIndex[0]].find(" ")-1])))
-					
-					
 					substr = message[codeblockIndex[0]:codeblockIndex[1]-1]
 					formattedMessages.append(embedsObj(substr,"codeblock"))
-					print(">>" + substr)
+					#print(">>" + substr)
 					if len(codeblockIndex) > 2:
 						if message[codeblockIndex[1]:codeblockIndex[2]-1] != "":
 							formattedMessages.append(embedsObj(substr,"text"))
@@ -68,14 +62,8 @@ class betterEmbeds():
 	async def add_field(self, textChannelName, body):
 		if len(body) < 3:
 			return
-		print(self.objectCount)
 		if not await self.test_embed(len(body)):
-			print("FAILED")
-			#Failed Constraint Check
-			if self.destination == '':
-				#print("I don't know where to send this :/")
-				await sendErrorMessage("CHANNEL_NOT_SET", str(textChannelName))
-			else:
+			if self.destination != '':
 				await self.send_message()
 				await self.reInitialize(str(textChannelName))
 		self.length = self.length + len(body)
@@ -108,6 +96,9 @@ async def splitTextMessage(message, textChannel,embed):
 async def splitCodeMessage(message, textChannel, embed):
 	i = -1
 	message = message['content']
+	language = message[0:min(message.find("\n"), 32)]
+	print(language)
+	print(language=="python")
 	while len(message) > 950:
 		i = message[500:900].rfind('\n') + 500
 		#print("1st: " + str(i))
@@ -117,8 +108,12 @@ async def splitCodeMessage(message, textChannel, embed):
 		if i == ((-1) + 500):
 			i = 900
 			#print("3rd: " + str(i))
+		if not message.startswith(language+str("\n")):
+			message = language+("\n") + message
 		await embed.add_field(str(textChannel.name), "```{}```".format(message[0:i]))
-		message = message[i:]
+		message = message[i+1:]
+	if not message.startswith(language+str("\n")):
+		message = language+("\n") + message
 	await embed.add_field(str(textChannel.name), "```{}```".format(message))
 
 def embedsObj(content, msgType, attachment=None):
@@ -174,8 +169,6 @@ class archiveCog(commands.Cog):
 			if embed.length > 0:
 				await embed.send_message()
 		else:
-			#await ctx.send("This CTF has already been merged or something has gone very, very wrong :(")
-			#await sendErrorMessage(str(category)).sendError("CTF_ALREADY_MERGED")
 			error = sendErrorMessage(ctx)
 			await error.sendError("E_CTF_ALREADY_MERGED")		
 	pass
