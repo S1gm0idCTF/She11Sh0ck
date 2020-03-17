@@ -82,7 +82,6 @@ async def on_guild_join(guild):
 
 @bot.event
 async def on_command_error(ctx, errormsg):
-		await ctx.message.delete()
 		"""The event triggered when an error is raised while invoking a command.
 			ctx   : Context
 			error : Exception"""
