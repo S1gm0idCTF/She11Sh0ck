@@ -6,9 +6,11 @@ import discord
 from discord.ext import commands
 from errors import sendErrorMessage
 
-f = open("keys.txt", "r")
-TOKEN = f.readline().strip()
-serverID = int(f.readline().strip())
+try:
+	f = open("keys.txt", "r")
+	TOKEN = f.readline().strip()
+except:
+	raise ValueError("You need to supply a keys.txt file. Instructions can be found in the README.md file")
 
 
 async def get_prefix(bot, message):
@@ -26,7 +28,7 @@ async def get_prefix(bot, message):
 		return "?"
 
 	# If we are in a guild, we allow for the user to mention us or use any of the prefixes in our list.
-
+	print(message.id)
 	return commands.when_mentioned_or(*prefixes)(bot, message)
 
 
@@ -54,5 +56,30 @@ async def on_ready():
 
 	# Changes our bots Playing Status. type=1(streaming) for a standard game you could remove type and url.
 	print(f"Successfully logged in and booted...!")
+	try:
+		with open("server_config.json", "r") as f:
+			settings = json.load(f)
+	except:
+		raise ValueError("You need to create server_config.json file. Instructions can be found in the README.md file.")
+	print(settings)
+
+	for guild in bot.guilds:
+		if str(guild.id) not in settings:
+			settings[str(guild.id)] = {}
+
+	with open("server_config.json", "w") as f:
+		json.dump(settings, f, indent=4)
+
+
+@bot.event
+async def on_guild_join(guild):
+	with open("server_config.json", "r") as f:
+		settings = json.load(f)
+
+	settings[str(guild.id)] = {}
+
+	with open("server_config.json", "w") as f:
+		json.dump(settings, f, indent=4)
+
 
 bot.run(TOKEN, bot=True)
