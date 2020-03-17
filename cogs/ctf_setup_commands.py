@@ -1,5 +1,5 @@
 import json
-
+from errors import sendErrorMessage
 import discord
 from discord.ext import commands
 
@@ -9,17 +9,21 @@ class CTFSetup(commands.Cog):
 		self.bot = bot
 		self.activeCTF = None
 
+	async def isCTFActive(self, ctx):
+		if not await self.getctf(ctx):
+			error = sendErrorMessage(ctx)
+			await error.sendError("E_CTF_NOT_SET")	
+			return False
+		else:
+			return True
+
 	@commands.command()
 	@commands.guild_only()
 	async def currentctf(self, ctx):
-		if await self.getctf(ctx):
+		if await self.isCTFActive(ctx):
 			await ctx.send("`{}`, is the selected CTF.".format(await self.getctf(ctx)))
-		else:
-			await ctx.send(
-				"There is no CTF currently selected. Please select one with `!ctf setctf <name>` or create one with `!ctf createctf <name>`"
-			)
 		pass
-
+	
 	@commands.command()
 	@commands.guild_only()
 	async def setctf(self, ctx, ctfname):
@@ -39,7 +43,8 @@ class CTFSetup(commands.Cog):
 				json.dump(settings, f, indent=4)
 
 		else:
-			await ctx.send("That ctf doesn't exist :(")
+			error = sendErrorMessage(ctx)
+			await error.sendError("E_CTF_NOT_FOUND")		
 		pass
 
 	async def getctf(self, ctx):
@@ -69,7 +74,8 @@ class CTFSetup(commands.Cog):
 
 			await self.setctf(ctx, ctfname)
 		else:
-			await ctx.send("A CTF with this name already exists")
+			error = sendErrorMessage(ctx)
+			await error.sendError("E_CTF_ALREADY_EXISTS")		
 		pass
 
 	@commands.command(name="addQ")
@@ -117,11 +123,11 @@ class CTFSetup(commands.Cog):
 				with open("server_config.json", "w") as f:
 					json.dump(settings, f, indent=4)
 			else:
-				await ctx.send("This question does not exist")
+				error = sendErrorMessage(ctx)
+				await error.sendError("E_Q_NOT_FOUND")	
 		else:
-			await ctx.send(
-				"There is no CTF currently selected. Please select one with `!ctf setctf <name>` or create one with `!ctf createctf <name>`"
-			)
+			error = sendErrorMessage(ctx)
+			await error.sendError("E_CTF_NOT_FOUND")
 
 	@commands.command()
 	@commands.guild_only()
@@ -131,7 +137,7 @@ class CTFSetup(commands.Cog):
 			send = ""
 			with open("server_config.json", "r") as f:
 				settings = json.load(f)
-
+			i = 1
 			for key in settings[str(ctx.guild.id)][await self.getctf(ctx)]["questions"]:
 				if (
 					settings[str(ctx.guild.id)][await self.getctf(ctx)]["questions"][
@@ -139,10 +145,10 @@ class CTFSetup(commands.Cog):
 					]
 					== True
 				):
-					send += key + " | " + "SOLVED!!!\n"
+					send += "[{}] ".format(i) + "~~"  + key + "~~\n"
 				else:
-					send += key + " | " + "unsolved\n"
-
+					send += "[{}] ".format(i) + key + "\n"
+				i = i + 1 
 			await ctx.send(send)
 		else:
 			await ctx.send(
