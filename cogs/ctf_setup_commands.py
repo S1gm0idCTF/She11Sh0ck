@@ -45,7 +45,6 @@ class CTFSetup(commands.Cog):
 		else:
 			error = sendErrorMessage(ctx)
 			await error.sendError("E_CTF_NOT_FOUND")		
-		pass
 
 	async def getctf(self, ctx):
 		with open("server_config.json", "r") as f:
@@ -124,7 +123,7 @@ class CTFSetup(commands.Cog):
 	
 	@commands.command()
 	@commands.guild_only()
-	async def markUnolved(self, ctx, Q):
+	async def markUnsolved(self, ctx, Q):
 		if await self.isCTFActive(ctx):
 			with open("server_config.json", "r") as f:
 				settings = json.load(f)
@@ -162,6 +161,40 @@ class CTFSetup(commands.Cog):
 					send += "[{}] ".format(i) + key + "\n"
 				i = i + 1 
 			await ctx.send(send)
+
+	@commands.command()
+	@commands.guild_only()
+	async def deleteQ(self, ctx, Q):
+		if await self.isCTFActive(ctx):
+			with open("server_config.json", "r") as f:
+				settings = json.load(f)
+
+			if Q in settings[str(ctx.guild.id)][await self.getctf(ctx)]["questions"]:
+				textChannel = discord.utils.get(ctx.guild.text_channels, category = discord.utils.get(ctx.guild.categories, name=await self.getctf(ctx)), name=Q)
+				await textChannel.delete()
+				settings[str(ctx.guild.id)][await self.getctf(ctx)]["questions"].pop(Q)
+
+				with open("server_config.json", "w") as f:
+					json.dump(settings, f, indent=4)
+
+			else:
+				error = sendErrorMessage(ctx)
+				await error.sendError("E_Q_NOT_FOUND")
+	
+	@commands.command()
+	@commands.guild_only()
+	async def deleteCTF(self, ctx):
+		if await self.isCTFActive(ctx):
+			with open("server_config.json", "r") as f:
+				settings = json.load(f)
+
+				category = discord.utils.get(ctx.guild.categories, name=await self.getctf(ctx))
+				await category.delete()
+				settings[str(ctx.guild.id)].pop(await self.getctf(ctx))
+				
+				with open("server_config.json", "w") as f:
+					json.dump(settings, f, indent=4)
+
 
 
 def setup(bot):
