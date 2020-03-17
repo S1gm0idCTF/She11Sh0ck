@@ -29,7 +29,7 @@ initial_extensions = [
 	"cogs.archive",
 	"cogs.ctf_setup_commands",
 	"cogs.ctf_utility_commands",
-	"cogs.owner_commands"
+	"cogs.owner_commands",
 ]
 
 bot = commands.Bot(command_prefix=get_prefix, description="The cog enabled rewrite")
@@ -50,26 +50,26 @@ async def on_ready():
 
 	with open("server_config.json", "r") as f:
 		settings = json.load(f)
-	
+
 	print(settings)
 
 	for guild in bot.guilds:
 		if str(guild.id) not in settings:
-			print(guild.id)
 			settings[str(guild.id)] = {}
-	
+
 	with open("server_config.json", "w") as f:
-		json.dump(settings, f, indent = 4)
+		json.dump(settings, f, indent=4)
+
 
 @bot.event
 async def on_guild_join(guild):
 	with open("server_config.json", "r") as f:
 		settings = json.load(f)
-	
+
 	settings[str(guild.id)] = {}
-	
+
 	with open("server_config.json", "w") as f:
-		json.dump(settings, f, indent = 4)
+		json.dump(settings, f, indent=4)
 
 
 bot.run(TOKEN, bot=True)
