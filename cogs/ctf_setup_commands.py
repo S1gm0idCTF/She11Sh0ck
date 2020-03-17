@@ -81,7 +81,7 @@ class CTFSetup(commands.Cog):
 	@commands.command(name="addQ")
 	@commands.guild_only()
 	async def Q(self, ctx, *questionTitle):
-		if await self.getctf(ctx):
+		if await self.isCTFActive(ctx):
 			print("adding question")
 			with open("server_config.json", "r") as f:
 				settings = json.load(f)
@@ -101,17 +101,13 @@ class CTFSetup(commands.Cog):
 				with open("server_config.json", "w") as f:
 					json.dump(settings, f, indent=4)
 			else:
-				await ctx.send("A question with that name already exists")
-				# print(self.activeCTF.getQs())
-		else:
-			await ctx.send(
-				"There is no CTF currently selected. Please select one with `!ctf setctf <name>` or create one with `!ctf createctf <name>`"
-			)
+				error = sendErrorMessage(ctx)
+				await error.sendError("E_Q_ALREADY_EXISTS")
 
 	@commands.command()
 	@commands.guild_only()
 	async def markSolved(self, ctx, Q):
-		if await self.getctf(ctx):
+		if await self.isCTFActive(ctx):
 			with open("server_config.json", "r") as f:
 				settings = json.load(f)
 
@@ -125,14 +121,11 @@ class CTFSetup(commands.Cog):
 			else:
 				error = sendErrorMessage(ctx)
 				await error.sendError("E_Q_NOT_FOUND")	
-		else:
-			error = sendErrorMessage(ctx)
-			await error.sendError("E_CTF_NOT_FOUND")
 
 	@commands.command()
 	@commands.guild_only()
 	async def ctfQs(self, ctx):
-		if await self.getctf(ctx):
+		if await self.isCTFActive(ctx):
 			await ctx.send("The current Questions are: ")
 			send = ""
 			with open("server_config.json", "r") as f:
@@ -150,49 +143,6 @@ class CTFSetup(commands.Cog):
 					send += "[{}] ".format(i) + key + "\n"
 				i = i + 1 
 			await ctx.send(send)
-		else:
-			await ctx.send(
-				"There is no CTF currently selected. Please select one with `!ctf setctf <name>` or create one with `!ctf createctf <name>`"
-			)
-	
-	@commands.command()
-	@commands.guild_only()
-	async def deleteQ(self, ctx, Q):
-		if await self.getctf(ctx):
-			with open("server_config.json", "r") as f:
-					settings = json.load(f)
-
-			if Q in settings[str(ctx.guild.id)][await self.getctf(ctx)]["questions"]:
-				textChannel = discord.utils.get(ctx.guild.text_channels, category = , name=Q)
-				await textChannel.delete()
-				
-				del settings[str(ctx.guild.id)][await self.getctf(ctx)]["questions"][Q]
-				with open("server_config.json", "w"):
-					json.dump(settings, f, indent=4)
-			else:
-				await ctx.send("This question does not exist")
-		else:
-			await ctx.send(
-				"There is no CTF currently selected. Please select one with `!ctf setctf <name>` or create one with `!ctf createctf <name>`"
-			)
-	
-	@commands.command()
-	@commands.guild_only()
-	async def deletectf(self, ctx):
-		if await self.getctf(ctx):
-			cat = discord.utils.get(ctx.guild.categories, name=await self.getctf(ctx))
-			await cat.delete()
-			with open("server_config.json", "r") as f:
-				settings = json.load(f)
-			del settings[str(ctx.guild.id)][await self.getctf(ctx)]
-			with open("server_config.json", "w"):
-				json.dump(settings, f, indent=4)
-		else:
-			await ctx.send(
-				"There is no CTF currently selected. Please select one with `!ctf setctf <name>` or create one with `!ctf createctf <name>`"
-			)
-
-
 
 
 def setup(bot):

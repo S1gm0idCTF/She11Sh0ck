@@ -31,6 +31,7 @@ class sendErrorMessage():
 			"E_CTF_ALREADY_EXISTS": "That CTF already exists, maybe you should `!ctf setCTF [ctfname]`",
 			"E_CTF_ALREADY_MERGED": "This CTF has already been merged or something has gone very, very wrong",
 			"E_Q_NOT_FOUND": "That Q doesn't exist, maybe you mispelled it.",
+			"E_Q_ALREADY_EXISTS": "A Q with that name already exists.",
 			"": "E_[...] Expectant an Error, no errorcode defined."
 		}
 		return errors[errorcode]
