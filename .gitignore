@@ -2,6 +2,5 @@ keys.txt
 *.DS_Store
 test.py
 server_config.json
-.vscode/
 __pycache__/
 *.pyc
