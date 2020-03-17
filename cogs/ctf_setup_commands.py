@@ -10,7 +10,7 @@ class CTFSetup(commands.Cog):
 		self.activeCTF = None
 
 	async def isCTFActive(self, ctx):
-		if self.activeCTF.getCTF() == "":
+		if not await self.getctf(ctx):
 			error = sendErrorMessage(ctx)
 			await error.sendError("E_CTF_NOT_SET")	
 			return False
@@ -19,11 +19,11 @@ class CTFSetup(commands.Cog):
 
 	@commands.command()
 	@commands.guild_only()
-	async def currentCTF(self, ctx):
+	async def currentctf(self, ctx):
 		if await self.isCTFActive(ctx):
-			await ctx.send("`{}`, is the selected CTF.".format(self.activeCTF.getCTF()))
+			await ctx.send("`{}`, is the selected CTF.".format(await self.getctf(ctx)))
 		pass
-
+	
 	@commands.command()
 	@commands.guild_only()
 	async def setctf(self, ctx, ctfname):
@@ -123,9 +123,11 @@ class CTFSetup(commands.Cog):
 				with open("server_config.json", "w") as f:
 					json.dump(settings, f, indent=4)
 			else:
-				await ctx.send("This question does not exist")
+				error = sendErrorMessage(ctx)
+				await error.sendError("E_Q_NOT_FOUND")	
 		else:
-			await error.sendError("E_Q_NOT_FOUND")		
+			error = sendErrorMessage(ctx)
+			await error.sendError("E_CTF_NOT_FOUND")
 
 	@commands.command()
 	@commands.guild_only()
