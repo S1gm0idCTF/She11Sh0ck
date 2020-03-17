@@ -133,16 +133,29 @@ class CTFSetup(commands.Cog):
 	@commands.command()
 	@commands.guild_only()
 	async def ctfQs(self, ctx):
-		await ctx.send("The current Questions are: ")
-		await self.updateQs(ctx)
-		send = ""
-		for key in self.activeCTF.QDict:
-			if self.activeCTF.QDict[key] == True:
-				send += key + " | " + "SOLVED!!!\n"
-			else:
-				send += key + " | " + "unsolved\n"
+		if await self.getctf(ctx):
+			await ctx.send("The current Questions are: ")
+			send = ""
+			with open("server_config.json", "r") as f:
+				settings = json.load(f)
+			i = 1
+			for key in settings[str(ctx.guild.id)][await self.getctf(ctx)]["questions"]:
+				if (
+					settings[str(ctx.guild.id)][await self.getctf(ctx)]["questions"][
+						key
+					]
+					== True
+				):
+					send += "[{}] ".format(i) + "~~"  + key + "~~\n"
+				else:
+					send += "[{}] ".format(i) + key + "\n"
+				i = i + 1 
+			await ctx.send(send)
+		else:
+			await ctx.send(
+				"There is no CTF currently selected. Please select one with `!ctf setctf <name>` or create one with `!ctf createctf <name>`"
+			)
 
-		await ctx.send(send)
 
 
 def setup(bot):
