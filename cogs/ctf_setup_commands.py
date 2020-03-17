@@ -101,12 +101,12 @@ class CTFSetup(commands.Cog):
 				with open("server_config.json", "w") as f:
 					json.dump(settings, f, indent=4)
 			else:
-				await ctx.send("A question with that name already exists")
+				error = sendErrorMessage(ctx)
+				await error.sendError("E_Q_ALREADY_EXISTS")
 				# print(self.activeCTF.getQs())
 		else:
-			await ctx.send(
-				"There is no CTF currently selected. Please select one with `!ctf setctf <name>` or create one with `!ctf createctf <name>`"
-			)
+			error = sendErrorMessage(ctx)
+			await error.sendError("E_CTF_NOT_SET")
 
 	@commands.command()
 	@commands.guild_only()
@@ -151,10 +151,8 @@ class CTFSetup(commands.Cog):
 				i = i + 1 
 			await ctx.send(send)
 		else:
-			await ctx.send(
-				"There is no CTF currently selected. Please select one with `!ctf setctf <name>` or create one with `!ctf createctf <name>`"
-			)
-
+			error = sendErrorMessage(ctx)
+			await error.sendError("E_CTF_NOT_SET")
 
 
 def setup(bot):
