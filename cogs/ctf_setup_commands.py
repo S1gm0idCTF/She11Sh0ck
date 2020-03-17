@@ -183,7 +183,7 @@ class CTFSetup(commands.Cog):
 	
 	@commands.command()
 	@commands.guild_only()
-	async def deleteCTF(self, ctx):
+	async def deletectf(self, ctx):
 		if await self.isCTFActive(ctx):
 			with open("server_config.json", "r") as f:
 				settings = json.load(f)
