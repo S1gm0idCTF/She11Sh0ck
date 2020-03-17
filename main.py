@@ -36,8 +36,7 @@ initial_extensions = [
 	"cogs.archive",
 	"cogs.ctf_setup_commands",
 	"cogs.ctf_utility_commands",
-	"cogs.owner_commands",
-	"cogs.error"
+	"cogs.owner_commands"
 ]
 
 bot = commands.Bot(command_prefix=get_prefix,
