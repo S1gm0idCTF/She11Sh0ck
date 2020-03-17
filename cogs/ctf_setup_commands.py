@@ -88,9 +88,9 @@ class CTFSetup(commands.Cog):
 					ctx.guild.categories, name=await self.getctf(ctx)
 				)
 				await ctx.guild.create_text_channel(questionTitle, category=category)
-				settings[str(ctx.guild.id)][await self.getctf(ctx)][
-					"questions"
-				][questionTitle] = False
+				settings[str(ctx.guild.id)][await self.getctf(ctx)]["questions"][
+					questionTitle
+				] = False
 
 				with open("server_config.json", "w") as f:
 					json.dump(settings, f, indent=4)
@@ -98,7 +98,9 @@ class CTFSetup(commands.Cog):
 				await ctx.send("A question with that name already exists")
 				# print(self.activeCTF.getQs())
 		else:
-			await ctx.send("There is no CTF currently selected. Please select one with `!ctf setctf <name>` or create one with `!ctf createctf <name>`")
+			await ctx.send(
+				"There is no CTF currently selected. Please select one with `!ctf setctf <name>` or create one with `!ctf createctf <name>`"
+			)
 
 	@commands.command()
 	@commands.guild_only()
@@ -108,14 +110,18 @@ class CTFSetup(commands.Cog):
 				settings = json.load(f)
 
 			if Q in settings[str(ctx.guild.id)][await self.getctf(ctx)]["questions"]:
-				settings[str(ctx.guild.id)][await self.getctf(ctx)]["questions"][Q] = True
+				settings[str(ctx.guild.id)][await self.getctf(ctx)]["questions"][
+					Q
+				] = True
 
 				with open("server_config.json", "w") as f:
 					json.dump(settings, f, indent=4)
 			else:
 				await ctx.send("This question does not exist")
 		else:
-			await ctx.send("There is no CTF currently selected. Please select one with `!ctf setctf <name>` or create one with `!ctf createctf <name>`")
+			await ctx.send(
+				"There is no CTF currently selected. Please select one with `!ctf setctf <name>` or create one with `!ctf createctf <name>`"
+			)
 
 	@commands.command()
 	@commands.guild_only()
@@ -128,7 +134,9 @@ class CTFSetup(commands.Cog):
 
 			for key in settings[str(ctx.guild.id)][await self.getctf(ctx)]["questions"]:
 				if (
-					settings[str(ctx.guild.id)][await self.getctf(ctx)]["questions"][key]
+					settings[str(ctx.guild.id)][await self.getctf(ctx)]["questions"][
+						key
+					]
 					== True
 				):
 					send += key + " | " + "SOLVED!!!\n"
@@ -137,7 +145,9 @@ class CTFSetup(commands.Cog):
 
 			await ctx.send(send)
 		else:
-			await ctx.send("There is no CTF currently selected. Please select one with `!ctf setctf <name>` or create one with `!ctf createctf <name>`")
+			await ctx.send(
+				"There is no CTF currently selected. Please select one with `!ctf setctf <name>` or create one with `!ctf createctf <name>`"
+			)
 
 
 def setup(bot):
