@@ -131,7 +131,7 @@ class CTFSetup(commands.Cog):
 			send = ""
 			with open("server_config.json", "r") as f:
 				settings = json.load(f)
-
+			i = 1
 			for key in settings[str(ctx.guild.id)][await self.getctf(ctx)]["questions"]:
 				if (
 					settings[str(ctx.guild.id)][await self.getctf(ctx)]["questions"][
@@ -139,10 +139,10 @@ class CTFSetup(commands.Cog):
 					]
 					== True
 				):
-					send += key + " | " + "SOLVED!!!\n"
+					send += "[{}] ".format(i) + "~~"  + key + "~~\n"
 				else:
-					send += key + " | " + "unsolved\n"
-
+					send += "[{}] ".format(i) + key + "\n"
+				i = i + 1 
 			await ctx.send(send)
 		else:
 			await ctx.send(

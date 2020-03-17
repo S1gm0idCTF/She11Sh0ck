@@ -23,6 +23,7 @@ def get_prefix(bot, message):
 		return "?"
 
 	# If we are in a guild, we allow for the user to mention us or use any of the prefixes in our list.
+	print(message.id)
 	return commands.when_mentioned_or(*prefixes)(bot, message)
 
 
