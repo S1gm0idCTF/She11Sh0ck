@@ -1,4 +1,5 @@
 import discord
+from errors import sendErrorMessage
 from discord.ext import commands
 from datetime import datetime
 
@@ -13,6 +14,8 @@ class processMessages():
         for msg in self.messages:
             message = msg.content
             if message.count("`") % 2 == 0 and message.count("`") > 0:
+
+
                 while "``" in message:
                     message = message.replace("``", "`")
                 while "```" in message:
@@ -23,6 +26,8 @@ class processMessages():
                     formattedMessages.append(embedsObj(message[0:(codeblockIndex[0]-1)],"text"))
                     print("t:" + str(message[0:(codeblockIndex[0]-1)]))
                 while len(codeblockIndex) > 1:
+                    #acceptableProgrammingLanguages = ["python", "md", "javascript", "js"]
+                    #print("%$$" + message[codeblockIndex[0]:message[codeblockIndex[0]].find(" ")])	
                     substr = message[codeblockIndex[0]:codeblockIndex[1]-1]
                     formattedMessages.append(embedsObj(substr,"codeblock"))
                     print(">>" + substr)
@@ -64,7 +69,8 @@ class betterEmbeds():
 			print("FAILED")
 			#Failed Constraint Check
 			if self.destination == '':
-				print("I don't know where to send this :/")
+				#print("I don't know where to send this :/")
+				await sendErrorMessage("CHANNEL_NOT_SET", str(textChannelName))
 			else:
 				await self.send_message()
 				await self.reInitialize(str(textChannelName))
@@ -83,12 +89,11 @@ async def splitTextMessage(message, textChannel,embed):
 	i = -1
 	message = message['content']
 	while len(message) > 997:
-		i = message[0:995].rfind('\n')
+		i = message[500:900].rfind('\n')
 		if i == -1:
-			i = message[0:995].rfind(' ')
+			i = message[500:900].rfind(' ')
 		if i == -1:
-			i = 950
-		print("SENDING: {}".format(message[0:i]))
+			i = 900
 		await embed.add_field(str(textChannel.name), message[0:i])					
 		message = message[i:]
 	await embed.add_field(str(textChannel.name), message)
@@ -97,12 +102,11 @@ async def splitCodeMessage(message, textChannel, embed):
 	i = -1
 	message = message['content']
 	while len(message) > 997:
-		i = message[0:995].rfind('\n')
+		i = message[500:900].rfind('\n')
 		if i == -1:
-			i = message[0:995].rfind(' ')
+			i = message[500:900].rfind(' ')
 		if i == -1:
-			i = 950
-		print("SENDING: {}".format(message[0:i]))
+			i = 900
 		await embed.add_field(str(textChannel.name), "```{}```".format(message[0:i]))
 		message = message[i:]
 	await embed.add_field(str(textChannel.name), "```{}```".format(message))
@@ -118,13 +122,26 @@ def embedsObj(content, msgType, attachment=None):
     return obj
 
 class archiveCog(commands.Cog):
+	
 	def __init__(self, bot):
 		self.bot = bot
+	@commands.Cog.listener()
+	async def on_command_error(self, ctx, errormsg):
+		"""The event triggered when an error is raised while invoking a command.
+		ctx   : Context
+		error : Exception"""
+		error = sendErrorMessage(ctx)
+		await error.sendError(errormsg)	
+		
 
 	@commands.command()
 	@commands.guild_only()
+	async def deletethisChannel(self,ctx):
+		await ctx.channel.delete()
+	@commands.command()
+	@commands.guild_only()
 	async def archive(self, ctx, category):
-	# merging doesn't delete the originals in case of an accidental merge
+		await ctx.message.delete(delay=1)
 		print("[JOB START]: MERGING" + category.upper())
 		categoryObject = discord.utils.get(ctx.guild.channels, name=str(category.lower()))
 		embed = betterEmbeds(str(category))
@@ -147,8 +164,11 @@ class archiveCog(commands.Cog):
 			if embed.length > 0:
 				await embed.send_message()
 		else:
-			await ctx.send("This CTF has already been merged or something has gone very, very wrong :(")
-		pass
+			#await ctx.send("This CTF has already been merged or something has gone very, very wrong :(")
+			#await sendErrorMessage(str(category)).sendError("CTF_ALREADY_MERGED")
+			error = sendErrorMessage(ctx)
+			await error.sendError("E_CTF_ALREADY_MERGED")		
+	pass
 
 def setup(bot):
     bot.add_cog(archiveCog(bot))

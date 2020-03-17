@@ -4,11 +4,11 @@ import json
 
 import discord
 from discord.ext import commands
+from errors import sendErrorMessage
 
 f = open("keys.txt", "r")
 TOKEN = f.readline().strip()
 serverID = int(f.readline().strip())
-
 
 def get_prefix(bot, message):
 	"""A callable Prefix for our bot. This could be edited to allow per server prefixes."""
@@ -22,6 +22,7 @@ def get_prefix(bot, message):
 		return "?"
 
 	# If we are in a guild, we allow for the user to mention us or use any of the prefixes in our list.
+	
 	return commands.when_mentioned_or(*prefixes)(bot, message)
 
 
@@ -29,7 +30,8 @@ initial_extensions = [
 	"cogs.archive",
 	"cogs.ctf_setup_commands",
 	"cogs.ctf_utility_commands",
-	"cogs.owner_commands"
+	"cogs.owner_commands",
+	"cogs.error"
 ]
 
 bot = commands.Bot(command_prefix=get_prefix, description="The cog enabled rewrite")
