@@ -2,10 +2,10 @@
 A Bot to manage discord servers for CTF Competitions
 
 # Basic Initialization
-This is a development build and not designed for personal use (yet) so in order to make this work you must supply your own keys.txt file and server_config.json file.
+This is a development build and not designed for personal use (yet) so in order to make this work you must supply your own `keys.txt` file and `server_config.json` file.
 
 <u>Keys</u>
-The keys.txt file must have your bot token on the first line. In mine, the serverID is on the second line, but that is not neccesary.
+The `keys.txt` file must have your bot token on the first line. If one does not exist, it will ask for your token
 
 <u>Server config</u>
 This file is for storing data if the bot is active on multiple servers. It muse be called `server_config.json` and contain a single pair of curly brackets `{}`. It will fill up automatically with use.

@@ -5,10 +5,11 @@ import json
 import discord
 from discord.ext import commands
 
-f = open("keys.txt", "r")
-TOKEN = f.readline().strip()
-serverID = int(f.readline().strip())
-
+try:
+	f = open("keys.txt", "r")
+	TOKEN = f.readline().strip()
+except:
+	raise ValueError("You need to supply a keys.txt file. Instructions can be found in the README.md file")
 
 def get_prefix(bot, message):
 	"""A callable Prefix for our bot. This could be edited to allow per server prefixes."""
@@ -47,10 +48,11 @@ async def on_ready():
 
 	# Changes our bots Playing Status. type=1(streaming) for a standard game you could remove type and url.
 	print(f"Successfully logged in and booted...!")
-
-	with open("server_config.json", "r") as f:
-		settings = json.load(f)
-
+	try:
+		with open("server_config.json", "r") as f:
+			settings = json.load(f)
+	except:
+		raise ValueError("You need to create server_config.json file. Instructions can be found in the README.md file.")
 	print(settings)
 
 	for guild in bot.guilds:
