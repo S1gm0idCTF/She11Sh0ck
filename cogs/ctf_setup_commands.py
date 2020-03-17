@@ -30,10 +30,9 @@ class CTFSetup(commands.Cog):
 		print("setting ctf: " + ctfname.lower())
 		category = discord.utils.get(ctx.guild.categories, name=ctfname.lower())
 		# print(category)
-		if category != None:
-			with open("server_config.json", "r") as f:
+		with open("server_config.json", "r") as f:
 				settings = json.load(f)
-
+		if category != None and ctfname in settings[str(ctx.guild.id)]:
 			for key in settings[str(ctx.guild.id)]:
 				settings[str(ctx.guild.id)][key]["active"] = False
 
