@@ -7,8 +7,7 @@ from discord.ext import commands
 class CTFSetup(commands.Cog):
 	def __init__(self, bot):
 		self.bot = bot
-		self.activeCTF = None
-
+		
 	async def isCTFActive(self, ctx):
 		if not await self.getctf(ctx):
 			error = sendErrorMessage(ctx)
