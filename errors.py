@@ -2,7 +2,7 @@ import discord
 import asyncio
 from discord.ext import commands
 
-timeout = 5
+timeout = 3
 
 class sendErrorMessage():
 	def __init__(self, channel):
