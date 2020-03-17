@@ -1,5 +1,5 @@
 import json
-
+from errors import sendErrorMessage
 import discord
 from discord.ext import commands
 
@@ -35,9 +35,8 @@ class CTFSetup(commands.Cog):
 
 	async def isCTFActive(self, ctx):
 		if self.activeCTF.getCTF() == "":
-			await ctx.send(
-				"Please run `!ctf setCTF [ctfname]` or `!ctf createCTF[ctfname]`first."
-			)
+			error = sendErrorMessage(ctx)
+			await error.sendError("E_CTF_NOT_SET")	
 			return False
 		else:
 			return True
@@ -60,7 +59,8 @@ class CTFSetup(commands.Cog):
 			self.activeCTF.clearData()
 			await self.updateQs(ctx)
 		else:
-			await ctx.send("That ctf doesn't exist :(")
+			error = sendErrorMessage(ctx)
+			await error.sendError("E_CTF_NOT_FOUND")		
 		pass
 
 	@commands.command()
@@ -72,7 +72,8 @@ class CTFSetup(commands.Cog):
 			await ctx.guild.create_category(ctfname)
 			self.activeCTF.setCTF(ctfname)
 		else:
-			await ctx.send("A CTF with this name already exists")
+			error = sendErrorMessage(ctx)
+			await error.sendError("E_CTF_ALREADY_EXISTS")		
 		pass
 
 	@commands.command(name="addQ")
@@ -127,7 +128,8 @@ class CTFSetup(commands.Cog):
 		if Q in [channel.name for channel in category.channels]:
 			self.activeCTF.updateQ(Q, True)
 		else:
-			await ctx.send("This question does not exist")
+			error = sendErrorMessage(ctx)
+			await error.sendError("E_Q_NOT_FOUND")		
 		pass
 
 	@commands.command()

@@ -3,15 +3,19 @@ import asyncio
 from discord.ext import commands
 
 timeout = 3
+
 class sendErrorMessage():
     def __init__(self, channel):
-        self.embed = discord.Embed(title="# {}".format(str(channel)), description="### ERROR: Operation could not be performed.", color=0xFF0000)
+        self.embed = discord.Embed(title="# {}".format(str(
+            channel)), description="!Something Went Wrong", color=0xFF0000)
         self.channel = channel
+
     async def sendError(self, errorcode):
         if errorcode == "" or str(errorcode).startswith("E_"):
             errorcode = self.get_error(errorcode)
         self.embed.add_field(name="Error:", value=errorcode)
-        self.embed.set_thumbnail(url="https://cdn.pixabay.com/photo/2017/02/12/21/29/false-2061131_960_720.png")
+        self.embed.set_thumbnail(
+            url="https://cdn.pixabay.com/photo/2017/02/12/21/29/false-2061131_960_720.png")
         message = await self.channel.send(embed=self.embed)
         await asyncio.sleep(timeout)
         await message.delete()
@@ -30,4 +34,3 @@ class sendErrorMessage():
             "": "E_[...] Expectant an Error, no errorcode defined."
         }
         return errors[errorcode]
-

@@ -10,19 +10,23 @@ f = open("keys.txt", "r")
 TOKEN = f.readline().strip()
 serverID = int(f.readline().strip())
 
-def get_prefix(bot, message):
-	"""A callable Prefix for our bot. This could be edited to allow per server prefixes."""
 
+async def get_prefix(bot, message):
+	"""A callable Prefix for our bot. This could be edited to allow per server prefixes."""
+	
 	# Notice how you can use spaces in prefixes. Try to keep them simple though.
 	prefixes = ["!ctf "]
 
+	if message.content.startswith(prefixes[0].replace(" ", "")):
+		await message.delete()
+
 	# Check to see if we are outside of a guild. e.g DM's etc.
+	# Only allow ? to be used in DMs
 	if not message.guild:
-		# Only allow ? to be used in DMs
 		return "?"
 
 	# If we are in a guild, we allow for the user to mention us or use any of the prefixes in our list.
-	
+
 	return commands.when_mentioned_or(*prefixes)(bot, message)
 
 
@@ -34,7 +38,8 @@ initial_extensions = [
 	"cogs.error"
 ]
 
-bot = commands.Bot(command_prefix=get_prefix, description="The cog enabled rewrite")
+bot = commands.Bot(command_prefix=get_prefix,
+                   description="The cog enabled rewrite")
 
 if __name__ == "__main__":
 	for extension in initial_extensions:
