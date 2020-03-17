@@ -20,7 +20,7 @@ async def get_prefix(bot, message):
 	prefixes = ["!ctf "]
 
 	if message.content.startswith(prefixes[0].replace(" ", "")):
-		await message.delete()
+		await message.delete(delay=500)
 
 	# Check to see if we are outside of a guild. e.g DM's etc.
 	# Only allow ? to be used in DMs

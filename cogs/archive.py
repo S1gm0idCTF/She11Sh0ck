@@ -4,44 +4,48 @@ from discord.ext import commands
 from datetime import datetime
 
 class processMessages():
-    def __init__(self, messages):
-        self.messages = [x for x in messages][::-1]
-        self.formattedMessages = self.findCodeBlocks()
-    def getMessages(self):
-        return self.formattedMessages
-    def findCodeBlocks(self):
-        formattedMessages = []
-        for msg in self.messages:
-            message = msg.content
-            if message.count("`") % 2 == 0 and message.count("`") > 0:
+	def __init__(self, messages):
+		self.messages = [x for x in messages][::-1]
+		self.formattedMessages = self.findCodeBlocks()
+	def getMessages(self):
+		return self.formattedMessages
+	def findCodeBlocks(self):
+		formattedMessages = []
+		for msg in self.messages:
+			message = msg.content
+			if message.count("`") % 2 == 0 and message.count("`") > 0:
 
 
-                while "``" in message:
-                    message = message.replace("``", "`")
-                while "```" in message:
-                    message = message.replace("```", "`")
-                codeblockIndex = [pos+1 for pos, char in enumerate(message) if char == '`']
-                if codeblockIndex[0] != 0:
-                    #if the there's whitespace between first message, and `
-                    formattedMessages.append(embedsObj(message[0:(codeblockIndex[0]-1)],"text"))
-                    print("t:" + str(message[0:(codeblockIndex[0]-1)]))
-                while len(codeblockIndex) > 1:
-                    #acceptableProgrammingLanguages = ["python", "md", "javascript", "js"]
-                    #print("%$$" + message[codeblockIndex[0]:message[codeblockIndex[0]].find(" ")])	
-                    substr = message[codeblockIndex[0]:codeblockIndex[1]-1]
-                    formattedMessages.append(embedsObj(substr,"codeblock"))
-                    print(">>" + substr)
-                    if len(codeblockIndex) > 2:
-                        if message[codeblockIndex[1]:codeblockIndex[2]-1] != "":
-                            formattedMessages.append(embedsObj(substr,"text"))
-                            print("t:" + message[codeblockIndex[1]:codeblockIndex[2]-1])
-                    codeblockIndex = codeblockIndex[2:]
-            else:
-                formattedMessages.append(embedsObj(message, "text"))
-            if msg.attachments != []:
-                for attchmnt in msg.attachments:
-                    formattedMessages.append(embedsObj(".", "file-img", attchmnt.url))
-        return formattedMessages
+				while "``" in message:
+					message = message.replace("``", "`")
+				while "```" in message:
+					message = message.replace("```", "`")
+				codeblockIndex = [pos+1 for pos, char in enumerate(message) if char == '`']
+				if codeblockIndex[0] != 0:
+					#if the there's whitespace between first message, and `
+					formattedMessages.append(embedsObj(message[0:(codeblockIndex[0]-1)],"text"))
+					print("t:" + str(message[0:(codeblockIndex[0]-1)]))
+				while len(codeblockIndex) > 1:
+					#acceptableProgrammingLanguages = ["python", "md", "javascript", "js"]
+					
+					print(".{}.".format(message[codeblockIndex[0]:message[codeblockIndex[0]].find(" ")-1]))
+					print(".{}.".format(len(message[codeblockIndex[0]:message[codeblockIndex[0]].find(" ")-1])))
+					
+					
+					substr = message[codeblockIndex[0]:codeblockIndex[1]-1]
+					formattedMessages.append(embedsObj(substr,"codeblock"))
+					print(">>" + substr)
+					if len(codeblockIndex) > 2:
+						if message[codeblockIndex[1]:codeblockIndex[2]-1] != "":
+							formattedMessages.append(embedsObj(substr,"text"))
+							print("t:" + message[codeblockIndex[1]:codeblockIndex[2]-1])
+					codeblockIndex = codeblockIndex[2:]
+			else:
+				formattedMessages.append(embedsObj(message, "text"))
+			if msg.attachments != []:
+				for attchmnt in msg.attachments:
+					formattedMessages.append(embedsObj(".", "file-img", attchmnt.url))
+		return formattedMessages
 
 class betterEmbeds():
 	def __init__(self, category):
@@ -88,12 +92,15 @@ class betterEmbeds():
 async def splitTextMessage(message, textChannel,embed):
 	i = -1
 	message = message['content']
-	while len(message) > 997:
-		i = message[500:900].rfind('\n')
-		if i == -1:
-			i = message[500:900].rfind(' ')
-		if i == -1:
+	while len(message) > 950:
+		i = message[500:900].rfind('\n') + 500
+		#print("1st: " + str(i))
+		if i == ((-1) + 500):
+			i = message[500:900].rfind(' ') + 500
+			#print("2nd: " + str(i))
+		if i == ((-1) + 500):
 			i = 900
+			#print("3rd: " + str(i))
 		await embed.add_field(str(textChannel.name), message[0:i])					
 		message = message[i:]
 	await embed.add_field(str(textChannel.name), message)
@@ -101,25 +108,28 @@ async def splitTextMessage(message, textChannel,embed):
 async def splitCodeMessage(message, textChannel, embed):
 	i = -1
 	message = message['content']
-	while len(message) > 997:
-		i = message[500:900].rfind('\n')
-		if i == -1:
-			i = message[500:900].rfind(' ')
-		if i == -1:
+	while len(message) > 950:
+		i = message[500:900].rfind('\n') + 500
+		#print("1st: " + str(i))
+		if i == ((-1) + 500):
+			i = message[500:900].rfind(' ') + 500
+			#print("2nd: " + str(i))
+		if i == ((-1) + 500):
 			i = 900
+			#print("3rd: " + str(i))
 		await embed.add_field(str(textChannel.name), "```{}```".format(message[0:i]))
 		message = message[i:]
 	await embed.add_field(str(textChannel.name), "```{}```".format(message))
 
 def embedsObj(content, msgType, attachment=None):
-    acceptableMsgTypes = ['text', 'codeblock', 'link', 'file-img', 'file-other']
-    obj = {}
-    obj["content"] = content
-    if msgType in acceptableMsgTypes:
-        obj["type"] = msgType
-    if attachment != None:
-        obj["attachment"] = attachment
-    return obj
+	acceptableMsgTypes = ['text', 'codeblock', 'link', 'file-img', 'file-other']
+	obj = {}
+	obj["content"] = content
+	if msgType in acceptableMsgTypes:
+		obj["type"] = msgType
+	if attachment != None:
+		obj["attachment"] = attachment
+	return obj
 
 class archiveCog(commands.Cog):
 	
@@ -171,4 +181,4 @@ class archiveCog(commands.Cog):
 	pass
 
 def setup(bot):
-    bot.add_cog(archiveCog(bot))
+	bot.add_cog(archiveCog(bot))
