@@ -80,5 +80,4 @@ async def on_guild_join(guild):
 	with open("server_config.json", "w") as f:
 		json.dump(settings, f, indent=4)
 
-
 bot.run(TOKEN, bot=True)

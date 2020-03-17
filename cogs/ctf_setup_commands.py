@@ -121,6 +121,25 @@ class CTFSetup(commands.Cog):
 			else:
 				error = sendErrorMessage(ctx)
 				await error.sendError("E_Q_NOT_FOUND")	
+	
+	@commands.command()
+	@commands.guild_only()
+	async def markUnolved(self, ctx, Q):
+		if await self.isCTFActive(ctx):
+			with open("server_config.json", "r") as f:
+				settings = json.load(f)
+
+			if Q in settings[str(ctx.guild.id)][await self.getctf(ctx)]["questions"]:
+				settings[str(ctx.guild.id)][await self.getctf(ctx)]["questions"][
+					Q
+				] = False
+
+				with open("server_config.json", "w") as f:
+					json.dump(settings, f, indent=4)
+			else:
+				error = sendErrorMessage(ctx)
+				await error.sendError("E_Q_NOT_FOUND")	
+
 
 	@commands.command()
 	@commands.guild_only()
