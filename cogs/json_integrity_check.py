@@ -40,7 +40,7 @@ class jsonIntegrity(commands.Cog):
 						category = discord.utils.get(guild.categories, name=key.lower())
 						for key2 in settings[str(guild.id)][key]["questions"]:
 							if key2 not in [channel.name for channel in category.channels]:
-								# make sure for every question in category there's a question on the server
+								# make sure for every question in json category there's a question on the server
 								questions_to_pop.append(key2) 
 								check2 = False
 						
@@ -57,7 +57,16 @@ class jsonIntegrity(commands.Cog):
 
 			if not check1 or not check2 or not check3:
 				print(check1, check2, check3,)
-				print("things were fucked but are getting fixed now :D")
+				print("integrity check failed")
+				print("[1] Every CTF on the JSON has a corresponding category on the server: ", check1)
+				if not check1:
+					print("	Deleting the missing CTF from the json")
+				print("[2] Every question on the json has a corresponding text channel on the server: ", check2)
+				if not check2:
+					print("	Deleting the missing question from the json")
+				print("[3] Every question on the server has a corresponding question in the json: ", check3)
+				if not check3:
+					print("	Adding an unsolved question with the correct name to the json")
 				update = True
 
 		if update:		
