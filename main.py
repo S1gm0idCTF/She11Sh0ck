@@ -28,7 +28,6 @@ async def get_prefix(bot, message):
 		return "?"
 
 	# If we are in a guild, we allow for the user to mention us or use any of the prefixes in our list.
-	print(message.id)
 	return commands.when_mentioned_or(*prefixes)(bot, message)
 
 
@@ -81,12 +80,12 @@ async def on_guild_join(guild):
 	with open("server_config.json", "w") as f:
 		json.dump(settings, f, indent=4)
 
-@bot.event
-async def on_command_error(ctx, errormsg):
-		"""The event triggered when an error is raised while invoking a command.
-			ctx   : Context
-			error : Exception"""
-		error = sendErrorMessage(ctx)
-		await error.sendError(errormsg)
+# @bot.event
+# async def on_command_error(ctx, errormsg):
+# 		"""The event triggered when an error is raised while invoking a command.
+# 			ctx   : Context
+# 			error : Exception"""
+# 		error = sendErrorMessage(ctx)
+# 		await error.sendError(errormsg)
 
 bot.run(TOKEN, bot=True)
