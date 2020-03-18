@@ -8,12 +8,10 @@ from errors import sendErrorMessage
 class jsonIntegrity(commands.Cog):
 	def __init__(self, bot):
 		self.bot = bot
-		# self.integrityCheck.start()
+		self.integrityCheck.start()
 
-	#@tasks.loop(seconds=1.0)
-	@commands.command()
-	@commands.guild_only()
-	async def integrityCheck(self, ctx):
+	@tasks.loop(seconds=10.0)
+	async def integrityCheck(self):
 
 		# Stuff this file needs to do:
 		# ASSUME THE SERVER IS ALWAYS RIGHT
@@ -27,6 +25,7 @@ class jsonIntegrity(commands.Cog):
 
 		with open("server_config.json", "r") as f:
 			settings = json.load(f)
+		update = False
 
 		for guild in self.bot.guilds:
 			questions_to_pop = []
@@ -46,27 +45,26 @@ class jsonIntegrity(commands.Cog):
 								check2 = False
 						
 						for channel in category.channels:
-							if channel.name not in settings[str(guild.id)][key].keys():
+							if channel.name not in settings[str(guild.id)][key]["questions"].keys():
 								settings[str(guild.id)][key]["questions"][channel.name] = False
 								check3 = False
-			print(cats_to_pop)
-			print(questions_to_pop)
+
 			for channel in questions_to_pop:
 				settings[str(guild.id)][key]["questions"].pop(channel)
 			
 			for cat in cats_to_pop:
 				settings[str(guild.id)].pop(cat)
 
-			
-		with open("server_config.json", "w") as f:
-			json.dump(settings, f, indent=4)
+			if not check1 or not check2 or not check3:
+				print(check1, check2, check3,)
+				print("things were fucked but are getting fixed now :D")
+				update = True
 
-		print("done")
-
-
-
-
-
+		if update:		
+			with open("server_config.json", "w") as f:
+				json.dump(settings, f, indent=4)
+		else:
+			print("integrity check passed")
 				
 def setup(bot):
 	bot.add_cog(jsonIntegrity(bot))
