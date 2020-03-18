@@ -8,7 +8,7 @@ from errors import sendErrorMessage
 class jsonIntegrity(commands.Cog):
 	def __init__(self, bot):
 		self.bot = bot
-		self.integrityCheck.start()
+		self.integrityCheck.start() # pylint: disable= no-member
 
 	@tasks.loop(seconds=10.0)
 	async def integrityCheck(self):
