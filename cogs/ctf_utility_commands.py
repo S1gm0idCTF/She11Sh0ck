@@ -105,6 +105,18 @@ class CTFUtility(commands.Cog):
 		await ctx.send(output)
 	pass
 ##########################################################
+	@commands.command()
+	@commands.guild_only()
+	async def atbash(self, ctx, f, *s):
+		s = ' '.join(s)
+		if pipe in s:
+			pp = ProcessPipe("atbash {} {}".format(f,s))
+			output = pp.getString()
+		else:
+			output = do_atbash(f,s)
+		await ctx.send(output)
+	pass
+##########################################################
 def setup(bot):
 	bot.add_cog(CTFUtility(bot))
 

@@ -42,8 +42,8 @@ def do_binary(f, input):
 		input = " ".join(input[i:i+8] for i in range(0, len(input), 8))
 		return ''.join(chr(int(binary, 2)) for binary in input.split(' '))
 ##
+##
 def do_az26(f, input):
-	
 	output = ""
 	input = input.upper()
 	alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
@@ -61,7 +61,21 @@ def do_az26(f, input):
 				i = int(i)
 				output = output + alphabet[int(i)-1]
 			except:
-				raise Exception('Invalid Arguments', 'AZ26')
+				raise Exception('Invalid Arguments', 'AZ26 Cipher')
 		return output
+def do_atbash(f, input):
+	output = ""
+	input = input.upper()
+	alpha = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+	revalpha = alpha[::-1]
+	if f == "-e" or f == "-encode" or f == "-d" or f == "-decode":
+		for char in input:
+			if alpha.find(char) > -1:
+				output = output + "" + revalpha[alpha.find(char)]
+			elif char == " ":
+				output = output + " "
+			else:
+				raise Exception('Invalid Arguments', 'atbash Cipher')
+	return output
 
 ##Future implementation... ASCII... Various Ciphers (rail ciphers?)... 
