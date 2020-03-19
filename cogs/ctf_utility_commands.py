@@ -1,9 +1,7 @@
 import discord
+import urllib.parse
 from discord.ext import commands
-
-
 from etc.encryptions import *
-
 from etc.pipes import ProcessPipe
 
 pipe = " | "
@@ -11,6 +9,23 @@ pipe = " | "
 class CTFUtility(commands.Cog):
 	def __init__(self, bot):
 		self.bot = bot
+	@commands.command()
+	@commands.guild_only()
+	async def exiftool(self,ctx, *url):
+		url = ''.join(url)
+		if len(url) > 4:
+			x = urllib.parse.quote(url)
+			await ctx.send("http://metapicz.com/#landing?imgsrc=" + x)
+		else:
+			for a in ctx.message.attachments:
+				x = urllib.parse.quote(a.url)
+				await ctx.send("http://metapicz.com/#landing?imgsrc=" + x)
+			
+			
+	@commands.command()
+	@commands.guild_only()
+	async def ezstego(self,ctx):
+		await ctx.send("https://www.secsy.net/easy_stegoCTF")
 ##########################################################
 	@commands.command()
 	@commands.guild_only()
