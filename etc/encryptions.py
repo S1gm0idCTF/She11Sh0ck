@@ -1,5 +1,6 @@
 import base64
-
+from etc.railfence import encryptRailFence
+from etc.railfence import decryptRailFence
 
 #
 def do_hex(f, input):
@@ -80,23 +81,45 @@ def do_atbash(f, input):
 ##
 def do_trans(f, input):
 	output = ""
-	if f == "-upper":
-		output = input.lower()
-	if f == "-lower":
+	if f == "-upper": ##ToUpper
 		output = input.upper()
-	if f == "-join":
+	if f == "-lower": ##ToLower
+		output = input.lower()
+	if f == "-join": ##Removes Whitespace "Joining a string"
 		output = input.replace(" ", "")
-	if f == "-rev" or f == "-reverse":
+	if f == "-rev" or f == "-reverse": ##Reverse String
 		output = input[::-1]
-	if f.startswith("-s"):
+	if f.startswith("-s"): ##Split[int] 
 		try:
 			x = int(f.replace("-s", ""))
 			while len(input) >= x:
-				output = output + input[:x] + " "
-				input = input[x:]
+				if x > 0:
+					output = output + input[:x] + " "
+					input = input[x:]
+				else:
+					raise Exception('Invalid Arguments', '[int] > 0')		
 
 		except:
 			raise Exception('Invalid Arguments', '-s[int]')
-	
+
+	if f == "-t": ##ToggleCase
+		i=0
+		for char in input:
+			if i % 2 == 0:
+				c = char.upper()
+			else:
+				c = char.lower()
+			output = output + c
+			i = i + 1
 	return output
-##Future implementation... ASCII... Various Ciphers (rail ciphers?)... 
+def do_rails(f,c,input):
+
+	
+	if f == "-e" or f == "-encode":
+		f = 2 
+		o = (encryptRailFence(input, int(c)))
+	if f == "-d" or f == "-decode":
+		f = 2 
+		o = (decryptRailFence(input, int(c)))
+	output = o
+	return output

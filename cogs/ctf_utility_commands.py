@@ -132,6 +132,14 @@ class CTFUtility(commands.Cog):
 			output = do_trans(f,s)
 		await ctx.send(output)
 	pass
+	@commands.command()
+	@commands.guild_only()
+	async def rails(self, ctx, f, c, *s):
+		s = ' '.join(s)
+		print(f,c,s)
+		output = do_rails(f,c,s)
+		await ctx.send(output)
+	pass
 ##########################################################
 def setup(bot):
 	bot.add_cog(CTFUtility(bot))
