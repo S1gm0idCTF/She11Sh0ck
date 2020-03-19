@@ -3,7 +3,7 @@ import traceback
 import json
 
 import discord
-from discord.ext import commands
+from discord.ext import tasks, commands
 from errors import sendErrorMessage
 
 try:
@@ -28,7 +28,6 @@ async def get_prefix(bot, message):
 		return "?"
 
 	# If we are in a guild, we allow for the user to mention us or use any of the prefixes in our list.
-	print(message.id)
 	return commands.when_mentioned_or(*prefixes)(bot, message)
 
 
@@ -36,7 +35,8 @@ initial_extensions = [
 	"cogs.archive",
 	"cogs.ctf_setup_commands",
 	"cogs.ctf_utility_commands",
-	"cogs.owner_commands"
+	"cogs.owner_commands",
+	"cogs.json_integrity_check"
 ]
 
 bot = commands.Bot(command_prefix=get_prefix,
@@ -80,12 +80,12 @@ async def on_guild_join(guild):
 	with open("server_config.json", "w") as f:
 		json.dump(settings, f, indent=4)
 
-#@bot.event
-#async def on_command_error(ctx, errormsg):
-		#"""The event triggered when an error is raised while invoking a command.
-			#ctx   : Context
-			#error : Exception"""
-		#error = sendErrorMessage(ctx)
-		#await error.sendError(errormsg)
+@bot.event
+async def on_command_error(ctx, errormsg):
+	"""The event triggered when an error is raised while invoking a command.
+	ctx   : Context
+	error : Exception"""
+	error = sendErrorMessage(ctx)
+	await error.sendError(errormsg)
 
 bot.run(TOKEN, bot=True)

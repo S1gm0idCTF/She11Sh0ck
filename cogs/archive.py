@@ -182,19 +182,7 @@ class archiveCog(commands.Cog):
 
 	def __init__(self, bot):
 		self.bot = bot
-	@commands.Cog.listener()
-	async def on_command_error(self, ctx, errormsg):
-		"""The event triggered when an error is raised while invoking a command.
-		ctx   : Context
-		error : Exception"""
-		error = sendErrorMessage(ctx)
-		await error.sendError(errormsg)
-
-	@commands.command()
-	@commands.guild_only()
-	async def deletethisChannel(self,ctx):
-		await ctx.channel.delete()
-
+		
 	@commands.command()
 	@commands.guild_only()
 	async def archive(self, ctx, category):
