@@ -45,6 +45,8 @@ class ProcessPipe():
 			self.string = do_az26(f, self.string)
 		if operation == "atbash":
 			self.string = do_atbash(f, self.string)
+		if operation == "trans":
+			self.string = do_trans(f, self.string)
 	def removeCommandFromStack(self):
 		self.stack = self.stack[1:]
 	def getString(self):

@@ -42,7 +42,6 @@ def do_binary(f, input):
 		input = " ".join(input[i:i+8] for i in range(0, len(input), 8))
 		return ''.join(chr(int(binary, 2)) for binary in input.split(' '))
 ##
-##
 def do_az26(f, input):
 	output = ""
 	input = input.upper()
@@ -53,7 +52,7 @@ def do_az26(f, input):
 			if alphabet.find(char) > -1:
 				output = output + " " + str(alphabet.find(char)+1)
 			else:
-				raise Exception('Invalid Arguments', 'AZ26')
+				raise Exception('Invalid Arguments', 'AZ26 Cipher')
 		return output[1:]
 	if f == "-d" or f == "-decode":
 		for i in input.split(" "):
@@ -63,6 +62,7 @@ def do_az26(f, input):
 			except:
 				raise Exception('Invalid Arguments', 'AZ26 Cipher')
 		return output
+##
 def do_atbash(f, input):
 	output = ""
 	input = input.upper()
@@ -77,5 +77,26 @@ def do_atbash(f, input):
 			else:
 				raise Exception('Invalid Arguments', 'atbash Cipher')
 	return output
+##
+def do_trans(f, input):
+	output = ""
+	if f == "-upper":
+		output = input.lower()
+	if f == "-lower":
+		output = input.upper()
+	if f == "-join":
+		output = input.replace(" ", "")
+	if f == "-rev" or f == "-reverse":
+		output = input[::-1]
+	if f.startswith("-s"):
+		try:
+			x = int(f.replace("-s", ""))
+			while len(input) >= x:
+				output = output + input[:x] + " "
+				input = input[x:]
 
+		except:
+			raise Exception('Invalid Arguments', '-s[int]')
+	
+	return output
 ##Future implementation... ASCII... Various Ciphers (rail ciphers?)... 

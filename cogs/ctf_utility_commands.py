@@ -29,6 +29,11 @@ class CTFUtility(commands.Cog):
 ##########################################################
 	@commands.command()
 	@commands.guild_only()
+	async def pigpen(self,ctx):
+		await ctx.send("https://cdn.discordapp.com/attachments/690040647016906757/690215389137076251/8550539_orig.png")
+##########################################################
+	@commands.command()
+	@commands.guild_only()
 	async def count(self, ctx, *s):
 		s = ' '.join(s)
 		await ctx.send(str(len(s)) + " characters long.")
@@ -114,6 +119,17 @@ class CTFUtility(commands.Cog):
 			output = pp.getString()
 		else:
 			output = do_atbash(f,s)
+		await ctx.send(output)
+	pass
+	@commands.command()
+	@commands.guild_only()
+	async def trans(self, ctx, f, *s):
+		s = ' '.join(s)
+		if pipe in s:
+			pp = ProcessPipe("trans {} {}".format(f,s))
+			output = pp.getString()
+		else:
+			output = do_trans(f,s)
 		await ctx.send(output)
 	pass
 ##########################################################
