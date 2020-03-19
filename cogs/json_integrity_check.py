@@ -10,7 +10,7 @@ class jsonIntegrity(commands.Cog):
 		self.bot = bot
 		self.integrityCheck.start() # pylint: disable= no-member
 
-	@tasks.loop(seconds=10.0)
+	@tasks.loop(seconds=1200.0) # runs the integrity check every 20 minutes
 	async def integrityCheck(self):
 
 		# Stuff this file needs to do:

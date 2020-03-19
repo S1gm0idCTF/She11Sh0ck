@@ -179,8 +179,9 @@ class CTFSetup(commands.Cog):
 				error = sendErrorMessage(ctx)
 				await error.sendError("E_Q_NOT_FOUND")
 	
-	@commands.command()
+	@commands.command(hidden=True)
 	@commands.guild_only()
+	@commands.is_owner()
 	async def deletectf(self, ctx):
 		if await self.isCTFActive(ctx):
 			with open("server_config.json", "r") as f:
