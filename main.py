@@ -19,9 +19,6 @@ async def get_prefix(bot, message):
 	# Notice how you can use spaces in prefixes. Try to keep them simple though.
 	prefixes = ["!ctf "]
 
-	if message.content.startswith(prefixes[0].replace(" ", "")):
-		await message.delete(delay=1)
-
 	# Check to see if we are outside of a guild. e.g DM's etc.
 	# Only allow ? to be used in DMs
 	if not message.guild:
@@ -80,12 +77,12 @@ async def on_guild_join(guild):
 	with open("server_config.json", "w") as f:
 		json.dump(settings, f, indent=4)
 
-#@bot.event
-#async def on_command_error(ctx, errormsg):
-		#"""The event triggered when an error is raised while invoking a command.
-			#ctx   : Context
-			#error : Exception"""
-		#error = sendErrorMessage(ctx)
-		#await error.sendError(errormsg)
+@bot.event
+async def on_command_error(ctx, errormsg):
+	"""The event triggered when an error is raised while invoking a command.
+	ctx   : Context
+	error : Exception"""
+	error = sendErrorMessage(ctx)
+	await error.sendError(errormsg)
 
 bot.run(TOKEN, bot=True)

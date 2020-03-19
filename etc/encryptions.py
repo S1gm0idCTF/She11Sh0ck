@@ -1,7 +1,6 @@
 import base64
-from etc.railfence import encryptRailFence
 from etc.railfence import decryptRailFence
-
+from etc.railfence import encryptRailFence
 #
 def do_hex(f, input):
 	s = ""
@@ -113,13 +112,10 @@ def do_trans(f, input):
 			i = i + 1
 	return output
 def do_rails(f,c,input):
-
 	
 	if f == "-e" or f == "-encode":
-		f = 2 
 		o = (encryptRailFence(input, int(c)))
 	if f == "-d" or f == "-decode":
-		f = 2 
 		o = (decryptRailFence(input, int(c)))
 	output = o
 	return output
