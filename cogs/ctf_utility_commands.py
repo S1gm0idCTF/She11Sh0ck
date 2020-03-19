@@ -7,6 +7,7 @@ from etc.pipes import ProcessPipe
 pipe = " | "
 
 class CTFUtility(commands.Cog):
+##########################################################
 	def __init__(self, bot):
 		self.bot = bot
 	@commands.command()
@@ -20,8 +21,7 @@ class CTFUtility(commands.Cog):
 			for a in ctx.message.attachments:
 				x = urllib.parse.quote(a.url)
 				await ctx.send("http://metapicz.com/#landing?imgsrc=" + x)
-			
-			
+##########################################################				
 	@commands.command()
 	@commands.guild_only()
 	async def ezstego(self,ctx):
@@ -90,6 +90,18 @@ class CTFUtility(commands.Cog):
 			output = pp.getString()
 		else:
 			output = do_binary(f,s)
+		await ctx.send(output)
+	pass
+##########################################################
+	@commands.command()
+	@commands.guild_only()
+	async def az26(self, ctx, f, *s):
+		s = ' '.join(s)
+		if pipe in s:
+			pp = ProcessPipe("az26 {} {}".format(f,s))
+			output = pp.getString()
+		else:
+			output = do_az26(f,s)
 		await ctx.send(output)
 	pass
 ##########################################################

@@ -2,12 +2,6 @@ from etc.encryptions import *
 
 pipe = " | " 
 class ProcessPipe():
-	commands = [
-		["commanda", "-e || -d"],
-		["commanda", "-e || -d"],
-		["commanda", "-e || -d"],
-		["commanda", "-e || -d"]
-	]
 	def __init__(self, command):
 		operations = 0
 		print(command)
@@ -47,6 +41,8 @@ class ProcessPipe():
 			self.string = do_b64(f, self.string)
 		if operation == "binary":
 			self.string = do_binary(f, self.string)
+		if operation == "az26":
+			self.string = do_az26(f, self.string)
 	def removeCommandFromStack(self):
 		self.stack = self.stack[1:]
 	def getString(self):

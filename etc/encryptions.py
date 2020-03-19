@@ -42,6 +42,26 @@ def do_binary(f, input):
 		input = " ".join(input[i:i+8] for i in range(0, len(input), 8))
 		return ''.join(chr(int(binary, 2)) for binary in input.split(' '))
 ##
-
+def do_az26(f, input):
+	
+	output = ""
+	input = input.upper()
+	alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+	if f == "-e" or f == "-encode":
+		input = input.replace(" ","")
+		for char in input:
+			if alphabet.find(char) > -1:
+				output = output + " " + str(alphabet.find(char)+1)
+			else:
+				raise Exception('Invalid Arguments', 'AZ26')
+		return output[1:]
+	if f == "-d" or f == "-decode":
+		for i in input.split(" "):
+			try:
+				i = int(i)
+				output = output + alphabet[int(i)-1]
+			except:
+				raise Exception('Invalid Arguments', 'AZ26')
+		return output
 
 ##Future implementation... ASCII... Various Ciphers (rail ciphers?)... 
