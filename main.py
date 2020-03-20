@@ -26,6 +26,7 @@ async def get_prefix(bot, message):
 
 	# If we are in a guild, we allow for the user to mention us or use any of the prefixes in our list.
 	print(message.id)
+	
 	return commands.when_mentioned_or(*prefixes)(bot, message)
 
 
@@ -33,13 +34,15 @@ initial_extensions = [
 	"cogs.archive",
 	"cogs.ctf_setup_commands",
 	"cogs.ctf_utility_commands",
-	"cogs.owner_commands"
+	"cogs.owner_commands",
+	"cogs.helpCog"
 ]
 
 bot = commands.Bot(command_prefix=get_prefix,
                    description="The cog enabled rewrite")
 
 if __name__ == "__main__":
+	bot.remove_command("help")
 	for extension in initial_extensions:
 		bot.load_extension(extension)
 
@@ -49,9 +52,10 @@ async def on_ready():
 	print(
 		f"\n\nLogged in as: {bot.user.name} - {bot.user.id}\nVersion: {discord.__version__}\n"
 	)
-
+	
 	# Changes our bots Playing Status. type=1(streaming) for a standard game you could remove type and url.
 	print(f"Successfully logged in and booted...!")
+	
 	try:
 		with open("server_config.json", "r") as f:
 			settings = json.load(f)
