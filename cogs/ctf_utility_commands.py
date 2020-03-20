@@ -41,7 +41,7 @@ class CTFUtility(commands.Cog):
 	@commands.guild_only()
 	async def count(self, ctx, *s):
 		s = ' '.join(s)
-		await sendEmbed(ctx, "Count", "That is " + str(len(s)) + " characters long.")
+		await sendEmbed(ctx, "Count", s + " is " + str(len(s)) + " characters long.")
 ##########################################################
 	@commands.command()
 	@commands.guild_only()
@@ -141,7 +141,7 @@ class CTFUtility(commands.Cog):
 	@commands.guild_only()
 	async def rails(self, ctx, f, c, *s):
 		s = ' '.join(s)
-		print(f,c,s)
+		# print(f,c,s)
 		output = do_rails(f,c,s)
 		await sendEmbed(ctx, "Rail Cipher (ZIGZAG)", output)
 	pass
