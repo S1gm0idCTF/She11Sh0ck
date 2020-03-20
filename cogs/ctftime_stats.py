@@ -46,7 +46,7 @@ class CTFSetup(commands.Cog):
 			embed.set_thumbnail(url="https://ctftime.org/static/img/s/16x16.png")
 
 			await ctx.send(embed=embed)
-	
+
 	@commands.command()
 	@commands.guild_only()
 	async def setID(self, ctx, teamID):
