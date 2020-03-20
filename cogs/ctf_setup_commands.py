@@ -113,6 +113,12 @@ class CTFSetup(commands.Cog):
 				settings[str(ctx.guild.id)][await self.getctf(ctx)]["questions"][
 					Q
 				] = True
+				
+				embed = discord.Embed(title= ctx.author.name + " marked " + Q + " as solved!", color=0x9400D3)
+				embed.set_thumbnail(url="https://res-4.cloudinary.com/crunchbase-production/image/upload/c_lpad,h_256,w_256,f_auto,q_auto:eco/v1397182843/e121315c5563525c7197fadf36fcbb9a.png")
+				
+				await ctx.send("@here")
+				await ctx.send(embed=embed)
 
 				with open("server_config.json", "w") as f:
 					json.dump(settings, f, indent=4)
