@@ -16,7 +16,6 @@ class CTFSetup(commands.Cog):
 	@commands.command()
 	@commands.guild_only()
 	async def teamstats(self, ctx):
-		t0 = time.time()
 		with open("server_config.json", "r") as f:
 			config = json.load(f)
 		if "teamID" not in config[str(ctx.guild.id)]["info"].keys():
