@@ -2,7 +2,7 @@ import json
 from errors import sendErrorMessage
 import discord
 from discord.ext import commands
-
+from etc.betterEmbeds import sendEmbed
 
 class CTFSetup(commands.Cog):
 	def __init__(self, bot):
@@ -20,13 +20,14 @@ class CTFSetup(commands.Cog):
 	@commands.guild_only()
 	async def currentctf(self, ctx):
 		if await self.isCTFActive(ctx):
-			await ctx.send("`{}`, is the selected CTF.".format(await self.getctf(ctx)))
+			ctfname = await self.getctf(ctx)
+			await sendEmbed(ctx, "Selected CTF", "{} is the current CTF.".format(ctfname))
 		pass
 	
 	@commands.command()
 	@commands.guild_only()
 	async def setctf(self, ctx, ctfname):
-		print("setting ctf: " + ctfname.lower())
+		
 		category = discord.utils.get(ctx.guild.categories, name=ctfname.lower())
 		# print(category)
 		with open("server_config.json", "r") as f:
@@ -39,7 +40,7 @@ class CTFSetup(commands.Cog):
 
 			with open("server_config.json", "w") as f:
 				json.dump(settings, f, indent=4)
-
+			await sendEmbed(ctx, "SetCTF", "The currentctf has been changed to: " + ctfname)
 		else:
 			error = sendErrorMessage(ctx)
 			await error.sendError("E_CTF_NOT_FOUND")		
@@ -142,7 +143,7 @@ class CTFSetup(commands.Cog):
 	@commands.guild_only()
 	async def ctfQs(self, ctx):
 		if await self.isCTFActive(ctx):
-			await ctx.send("The current Questions are: ")
+			
 			send = ""
 			with open("server_config.json", "r") as f:
 				settings = json.load(f)
@@ -154,12 +155,12 @@ class CTFSetup(commands.Cog):
 					]
 					== True
 				):
-					send += "[{}] ".format(i) + "~~"  + key + "~~\n"
+					send += "[{}] ".format(i) + "~~**"  + key + "**~~\n"
 				else:
 					send += "[{}] ".format(i) + key + "\n"
 				i = i + 1 
-			await ctx.send(send)
-
+			#await ctx.send(send)
+			await sendEmbed(ctx, "Current Questions:", send)
 	@commands.command()
 	@commands.guild_only()
 	async def deleteQ(self, ctx, Q):
