@@ -1,4 +1,4 @@
-# CTF-Discord-Bot
+# She11Sh0ck
 A Bot to manage discord servers for CTF Competitions
 
 # Basic Initialization

@@ -3,7 +3,7 @@ import traceback
 import json
 
 import discord
-from discord.ext import commands
+from discord.ext import tasks, commands
 from errors import sendErrorMessage
 
 try:
@@ -25,8 +25,6 @@ async def get_prefix(bot, message):
 		return "?"
 
 	# If we are in a guild, we allow for the user to mention us or use any of the prefixes in our list.
-	print(message.id)
-	
 	return commands.when_mentioned_or(*prefixes)(bot, message)
 
 
@@ -35,6 +33,7 @@ initial_extensions = [
 	"cogs.ctf_setup_commands",
 	"cogs.ctf_utility_commands",
 	"cogs.owner_commands",
+	"cogs.json_integrity_check"
 	"cogs.helpCog"
 ]
 
