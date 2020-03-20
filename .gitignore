@@ -4,3 +4,4 @@ test.py
 server_config.json
 __pycache__/
 *.pyc
+.vscode/
