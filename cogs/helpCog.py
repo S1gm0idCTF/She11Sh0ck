@@ -14,7 +14,7 @@ class helpCog(commands.Cog):
 	async def help(self, ctx, *p):
 
 		if p != ():
-			if p[0].lower() == "admin" or p[0].lower() == "1":
+			if p[0].lower() == "admin" or p[0].lower() == "0":
 				await sendEmbed(
 					ctx,
 					"Help!",
@@ -31,7 +31,7 @@ class helpCog(commands.Cog):
 					+ "`!ctf archive [ctfname]`\n",
 				)
 
-			elif p[0].lower() == "player" or p[0].lower() == "2":
+			elif p[0].lower() == "player" or p[0].lower() == "1":
 				await sendEmbed(
 					ctx,
 					"Help!",
@@ -51,7 +51,7 @@ class helpCog(commands.Cog):
 			elif (
 				p[0].lower() == "cryptography"
 				or p[0].lower() == "crypto"
-				or p[0].lower() == "3"
+				or p[0].lower() == "2"
 			):
 				await sendEmbed(
 					ctx,
@@ -75,7 +75,7 @@ class helpCog(commands.Cog):
 					+ "\n⯍Transforms Text valid parameters are:⯍\n*-upper, -lower, -t, -rev(erse), -join, -s[int]*\n"
 					+ "`!ctf trans (parameter) **input**`\n",
 				)
-			elif p[0].lower() == "other" or p[0].lower() == "4":
+			elif p[0].lower() == "other" or p[0].lower() == "3":
 				await sendEmbed(
 					ctx,
 					"Help!",
