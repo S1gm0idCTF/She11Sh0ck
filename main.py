@@ -33,7 +33,7 @@ initial_extensions = [
 	"cogs.ctf_setup_commands",
 	"cogs.ctf_utility_commands",
 	"cogs.owner_commands",
-	"cogs.json_integrity_check"
+	"cogs.json_integrity_check",
 	"cogs.helpCog"
 ]
 
