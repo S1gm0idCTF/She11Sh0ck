@@ -1,4 +1,5 @@
 import json
+import time
 
 import discord
 import requests
@@ -15,6 +16,7 @@ class CTFSetup(commands.Cog):
 	@commands.command()
 	@commands.guild_only()
 	async def teamstats(self, ctx):
+		t0 = time.time()
 		with open("server_config.json", "r") as f:
 			config = json.load(f)
 		if "teamID" not in config[str(ctx.guild.id)]["info"].keys():
@@ -34,7 +36,7 @@ class CTFSetup(commands.Cog):
 			data = data.json()
 
 			global_rating_place = data["rating"][0]["2020"]["rating_place"]
-			global_rating_points = round(data["rating"][0]["2020"]["rating_points"], 2)
+			global_rating_points = round(data["rating"][0]["2020"]["rating_points"], 3)
 			team_name = data["name"]
 
 			embed = discord.Embed(
@@ -45,7 +47,7 @@ class CTFSetup(commands.Cog):
 			embed.set_thumbnail(url="https://ctftime.org/static/img/s/16x16.png")
 
 			await ctx.send(embed=embed)
-
+	
 	@commands.command()
 	@commands.guild_only()
 	async def setID(self, ctx, teamID):

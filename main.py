@@ -58,7 +58,7 @@ async def on_ready():
 			settings = json.load(f)
 	except:
 		raise ValueError("You need to create server_config.json file. Instructions can be found in the README.md file.")
-	print(settings)
+
 
 	for guild in bot.guilds:
 		if str(guild.id) not in settings:
