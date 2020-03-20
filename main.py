@@ -33,7 +33,8 @@ initial_extensions = [
 	"cogs.ctf_setup_commands",
 	"cogs.ctf_utility_commands",
 	"cogs.owner_commands",
-	"cogs.json_integrity_check"
+	"cogs.json_integrity_check",
+	"cogs.ctftime_stats"
 ]
 
 bot = commands.Bot(command_prefix=get_prefix,
@@ -62,6 +63,8 @@ async def on_ready():
 	for guild in bot.guilds:
 		if str(guild.id) not in settings:
 			settings[str(guild.id)] = {}
+		if "info" not in settings[str(guild.id)].keys():
+			settings[str(guild.id)]["info"] = {}
 
 	with open("server_config.json", "w") as f:
 		json.dump(settings, f, indent=4)
@@ -73,6 +76,7 @@ async def on_guild_join(guild):
 		settings = json.load(f)
 
 	settings[str(guild.id)] = {}
+	settings[str(guild.id)]["info"] = {}
 
 	with open("server_config.json", "w") as f:
 		json.dump(settings, f, indent=4)

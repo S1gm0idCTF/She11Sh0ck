@@ -32,7 +32,7 @@ class jsonIntegrity(commands.Cog):
 			cats_to_pop = []
 			check1, check2, check3 = True, True, True
 			for key in settings[str(guild.id)]:
-				if key != "data":
+				if key != "info":
 					if discord.utils.get(guild.categories, name=key.lower()) is None:
 						cats_to_pop.append(key)
 						check1 = False #make sure for every category on the json there is one on the server
@@ -68,7 +68,7 @@ class jsonIntegrity(commands.Cog):
 				if not check3:
 					print("	Adding an unsolved question with the correct name to the json")
 				update = True
-
+				
 		if update:		
 			with open("server_config.json", "w") as f:
 				json.dump(settings, f, indent=4)
