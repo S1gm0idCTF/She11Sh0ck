@@ -1,5 +1,6 @@
 import discord
 from errors import sendErrorMessage
+from etc.betterEmbeds import sendEmbed
 from discord.ext import commands
 from datetime import datetime
 

@@ -33,13 +33,15 @@ initial_extensions = [
 	"cogs.ctf_setup_commands",
 	"cogs.ctf_utility_commands",
 	"cogs.owner_commands",
-	"cogs.json_integrity_check"
+	"cogs.json_integrity_check",
+	"cogs.helpCog"
 ]
 
 bot = commands.Bot(command_prefix=get_prefix,
                    description="The cog enabled rewrite")
 
 if __name__ == "__main__":
+	bot.remove_command("help")
 	for extension in initial_extensions:
 		bot.load_extension(extension)
 
@@ -49,9 +51,10 @@ async def on_ready():
 	print(
 		f"\n\nLogged in as: {bot.user.name} - {bot.user.id}\nVersion: {discord.__version__}\n"
 	)
-
+	
 	# Changes our bots Playing Status. type=1(streaming) for a standard game you could remove type and url.
 	print(f"Successfully logged in and booted...!")
+	
 	try:
 		with open("server_config.json", "r") as f:
 			settings = json.load(f)
