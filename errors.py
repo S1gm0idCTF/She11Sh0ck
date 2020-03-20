@@ -7,7 +7,7 @@ timeout = 5
 class sendErrorMessage():
 	def __init__(self, channel):
 		self.embed = discord.Embed(title="# {}".format(str(
-			channel)), description="!Something Went Wrong", color=0xFF0000)
+			channel)), description="!Something Went Wrong", color=0x9400D3)
 		self.channel = channel
 
 	async def sendError(self, errorcode):
