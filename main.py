@@ -1,10 +1,24 @@
 import sys
 import traceback
 import json
-
 import discord
 from discord.ext import tasks, commands
 from errors import sendErrorMessage
+import asyncio
+#--------------------------------------
+import sql
+from dbhandler import database
+sql.init()
+sql.db = database()
+
+
+def start(loop):
+  
+  loop.create_task(sql.db.createPool(loop))
+  
+loop = asyncio.get_event_loop()
+start(loop)
+
 
 try:
 	f = open("keys.txt", "r")

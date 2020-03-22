@@ -1,4 +1,5 @@
 keys.txt
+creds.py
 *.DS_Store
 test.py
 server_config.json
