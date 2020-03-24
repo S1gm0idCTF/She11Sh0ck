@@ -9,7 +9,20 @@ from dbhandler import database
 class CTFSetup(commands.Cog):
 	def __init__(self, bot):
 		self.bot = bot
+	@commands.command()
+	@commands.guild_only()
+	async def integrityCheck(self, ctx):
+		#Checks if Guild exists in DB
+		guilds = await sql.db.getGuildByID(ctx.guild.id)
 		
+		if guilds == None:
+			await sql.db.addGuild(ctx.guild.id, ctx.guild.name)
+			print("GUILD ERROR: " + str(ctx.guild.id))
+		elif len(guilds) > 1:
+			print("ERROR TOO MANY GUILDS" + str(ctx.guild.id)) 
+			#$THIS WILL NEVER HAPPEN, IF DB SET TO UNIQUE.$#
+		
+	pass
 	@commands.command()
 	@commands.guild_only()
 	async def currentctf(self, ctx):
@@ -20,7 +33,10 @@ class CTFSetup(commands.Cog):
 	@commands.command()
 	@commands.guild_only()
 	async def setctf(self, ctx, *ctf):
-		#print(ctx.message.author.id,ctx.guild.id)
+		
+		if len(await sql.db.getMember(ctx.message.author.id, ctx.guild.id)) < 1:
+			await sql.db.addMember(ctx.message.author.id,ctx.guild.id)
+
 		ctfs = await sql.db.getValidCTFIDs(ctx.message.author.id,ctx.guild.id)		
 		if len(ctfs) > 0:
 			for dbctf in ctfs:
@@ -29,7 +45,7 @@ class CTFSetup(commands.Cog):
 					await sql.db.updateCTF(ctx.message.author.id, ctx.guild.id, ctfid)
 					await sendEmbed(ctx, "UPDATE", "You are now participating in {}".format(ctfname.upper()))
 					return
-		await sendEmbed(ctx, "ERROR", "{} Not found.".format("_".join(ctf)))
+		await sendEmbed(ctx, "ERROR", "The CTF `{}` wasn't found.".format("_".join(ctf).upper()))
 
 	@commands.command()
 	@commands.guild_only()
@@ -42,7 +58,6 @@ class CTFSetup(commands.Cog):
 	@commands.guild_only()
 	async def addQ(self, ctx, *questionTitle):
 		questionTitle = "_".join(questionTitle)
-		
 		authorid = ctx.message.author.id
 		guildid = ctx.guild.id
 		ctf = await sql.db.getCurrentCTFName(await sql.db.getCurrentCTFID(authorid, guildid))
@@ -72,7 +87,6 @@ class CTFSetup(commands.Cog):
 		questionList = await sql.db.getCTFQuestions(await sql.db.getCurrentCTFID(ctx.message.author.id, ctx.message.guild.id))
 		for question in questionList:
 			if question[1] > 0:
-			
 				send += "[{}] ".format(i) + "~~**"  + question[0] + "**~~\n"
 			else:
 				send += "[{}] ".format(i) + question[0] + "\n"
@@ -87,27 +101,22 @@ class CTFSetup(commands.Cog):
 		authorid = ctx.message.author.id
 		guildid = ctx.guild.id
 		ctf = await sql.db.getCurrentCTFName(await sql.db.getCurrentCTFID(authorid, guildid))
-		category = discord.utils.get(ctx.guild.categories, name=ctf)
-		channel = discord.utils.get(name=Q, category=category)
-		channel.delete()
+		category = await discord.utils.get(ctx.guild.categories, name=ctf)
+		channel = await discord.utils.get(name=Q, category=category)
+		await channel.delete()
 		await sql.db.deleteQ(str(channel.name), await sql.db.getCurrentCTFID(authorid, guildid))
 	
 	@commands.command(hidden=True)
 	@commands.guild_only()
 	@commands.is_owner()
-	async def deletectf(self, ctx):
-		if await self.isCTFActive(ctx):
-			with open("server_config.json", "r") as f:
-				settings = json.load(f)
-
-				category = discord.utils.get(ctx.guild.categories, name=await self.getctf(ctx))
-				await category.delete()
-				settings[str(ctx.guild.id)].pop(await self.getctf(ctx))
-				
-				with open("server_config.json", "w") as f:
-					json.dump(settings, f, indent=4)
-
-
+	async def deletectf(self, ctx, *name):
+		categoryName = "_".join(name).lower()
+		channel = discord.utils.get(ctx.guild.categories, name=categoryName)
+		if channel != None:
+			for channels in channel.channels:
+				await channels.delete()
+			await channel.delete()
+		await sql.db.deleteCTF(categoryName, ctx.guild.id)
 
 def setup(bot):
 	bot.add_cog(CTFSetup(bot))

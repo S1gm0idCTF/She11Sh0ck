@@ -1,3 +1,2 @@
 def init():
     global db
-

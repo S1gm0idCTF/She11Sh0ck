@@ -2,9 +2,10 @@ import sys
 import traceback
 import json
 import discord
+import asyncio
+from creds import getDiscordAPIKeys
 from discord.ext import tasks, commands
 from errors import sendErrorMessage
-import asyncio
 #--------------------------------------
 import sql
 from dbhandler import database
@@ -21,8 +22,7 @@ start(loop)
 
 
 try:
-	f = open("keys.txt", "r")
-	TOKEN = f.readline().strip()
+	TOKEN = getDiscordAPIKeys()
 except:
 	raise ValueError("You need to supply a keys.txt file. Instructions can be found in the README.md file")
 
@@ -68,35 +68,11 @@ async def on_ready():
 	)
 	
 	# Changes our bots Playing Status. type=1(streaming) for a standard game you could remove type and url.
-	print(f"Successfully logged in and booted...!")
+	print(f"Ready to Party.")
 	
-	try:
-		with open("server_config.json", "r") as f:
-			settings = json.load(f)
-	except:
-		raise ValueError("You need to create server_config.json file. Instructions can be found in the README.md file.")
-
-
-	for guild in bot.guilds:
-		if str(guild.id) not in settings:
-			settings[str(guild.id)] = {}
-		if "info" not in settings[str(guild.id)].keys():
-			settings[str(guild.id)]["info"] = {}
-
-	with open("server_config.json", "w") as f:
-		json.dump(settings, f, indent=4)
-
-
 @bot.event
 async def on_guild_join(guild):
-	with open("server_config.json", "r") as f:
-		settings = json.load(f)
-
-	settings[str(guild.id)] = {}
-	settings[str(guild.id)]["info"] = {}
-
-	with open("server_config.json", "w") as f:
-		json.dump(settings, f, indent=4)
+	await sql.db.addGuild(guild.id,guild.name)
 
 @bot.event
 async def on_command_error(ctx, errormsg):

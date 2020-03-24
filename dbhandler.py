@@ -1,6 +1,7 @@
 import asyncio
 import aiomysql
-import creds
+from creds import getdb
+
 # Connect to server
 class database():
 
@@ -8,7 +9,9 @@ class database():
     print("Starting...")
     
   async def createPool(self,loop):
-    self.pool = creds(loop)
+    dbcreds = getdb()
+    self.pool = await aiomysql.create_pool(host=dbcreds["host"],port=dbcreds["port"], user=dbcreds["user"], password=dbcreds["password"], db=dbcreds["db"], loop=loop)
+
 
   async def getCurrentCTFID(self, discordID, guildID):
     sql = ("SELECT activectf FROM members where `uuid` = %d and `guildid` = %d" % (int(discordID), int(guildID)))
@@ -60,8 +63,54 @@ class database():
     #await self.pool.wait_closed()
 
   async def createCTF(self, ctfName, guildID):
-    print(ctfName,)
+    print(ctfName)
     sql = ("INSERT INTO ctfs (name, guildid) VALUES ('{}','{}')".format(str(ctfName), int(guildID)))
+    async with self.pool.acquire() as conn:
+      async with conn.cursor() as cur:
+        await cur.execute(sql)
+        await conn.commit()
+  async def deleteCTF(self, ctfName, guildID):
+    print('Goodbye {}'.format(ctfName))
+    sql = ("DELETE FROM `ctfs` WHERE name = '{}' and guildid = '{}'".format(str(ctfName), int(guildID)))
+    async with self.pool.acquire() as conn:
+      async with conn.cursor() as cur:
+        await cur.execute(sql)
+        await conn.commit()              
+      #self.pool.close()
+      #await self.pool.wait_closed()
+  async def getGuildByID(self,guildid):
+    sql = ("SELECT guildid,guildname from guilds where id={}".format(int(guildid)))
+    async with self.pool.acquire() as conn:
+      async with conn.cursor() as cur:
+        await cur.execute(sql)
+        return await cur.fetchall()
+
+    #self.pool.close()
+    #await self.pool.wait_closed()
+
+  async def getMember(self,uuid,guildid):
+    sql = ("SELECT id from members where uuid = {} and guildid={}".format(int(uuid), int(guildid)))
+    async with self.pool.acquire() as conn:
+      async with conn.cursor() as cur:
+        await cur.execute(sql)
+        return await cur.fetchall()
+
+    #self.pool.close()
+    #await self.pool.wait_closed()
+
+  async def addMember(self,uuid,guildid):
+    sql = ("INSERT INTO members (uuid,guildid, activectf) VALUES ('{}','{}','{}')".format(int(uuid), int(guildid), 0))
+    async with self.pool.acquire() as conn:
+      async with conn.cursor() as cur:
+        await cur.execute(sql)
+        await conn.commit()
+
+    #self.pool.close()
+    #await self.pool.wait_closed()
+
+
+  async def addGuild(self, guildid, guildname):
+    sql = ("INSERT INTO guilds (guildid, guildname) VALUES ('{}','{}')".format(int(guildid), str(guildname)))
     async with self.pool.acquire() as conn:
       async with conn.cursor() as cur:
         await cur.execute(sql)
