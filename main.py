@@ -8,10 +8,8 @@ from discord.ext import tasks, commands
 from errors import sendErrorMessage
 #--------------------------------------
 import sql
-from dbhandler import database
-sql.init()
-sql.db = database()
 
+sql.init()
 
 def start(loop):
   
@@ -47,7 +45,6 @@ initial_extensions = [
 	"cogs.ctf_setup_commands",
 	"cogs.ctf_utility_commands",
 	"cogs.owner_commands",
-	"cogs.json_integrity_check",
 	"cogs.ctftime_stats",
 	"cogs.helpCog"
 ]

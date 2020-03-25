@@ -4,7 +4,6 @@ import discord
 from discord.ext import commands
 from etc.betterEmbeds import sendEmbed
 import sql
-from dbhandler import database
 
 class CTFSetup(commands.Cog):
 	def __init__(self, bot):
@@ -40,7 +39,7 @@ class CTFSetup(commands.Cog):
 		ctfs = await sql.db.getValidCTFIDs(ctx.message.author.id,ctx.guild.id)		
 		if len(ctfs) > 0:
 			for dbctf in ctfs:
-				ctfid, ctfname = dbctf[0],dbctf[1]
+				ctfid, ctfname = dbctf[0], dbctf[1]
 				if ctfname == "_".join(ctf).lower():
 					await sql.db.updateCTF(ctx.message.author.id, ctx.guild.id, ctfid)
 					await sendEmbed(ctx, "UPDATE", "You are now participating in {}".format(ctfname.upper()))
@@ -104,7 +103,7 @@ class CTFSetup(commands.Cog):
 		category = await discord.utils.get(ctx.guild.categories, name=ctf)
 		channel = await discord.utils.get(name=Q, category=category)
 		await channel.delete()
-		await sql.db.deleteQ(str(channel.name), await sql.db.getCurrentCTFID(authorid, guildid))
+		await sql.db.delQuestion(str(channel.name), await sql.db.getCurrentCTFID(authorid, guildid))
 	
 	@commands.command(hidden=True)
 	@commands.guild_only()
