@@ -1,4 +1,3 @@
-creds.py
 creds.json
 *.DS_Store
 test.py
