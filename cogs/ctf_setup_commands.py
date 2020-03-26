@@ -14,7 +14,7 @@ class CTFSetup(commands.Cog):
 
 	@commands.command()
 	@commands.guild_only()
-	async def currentctf(self, ctx):
+	async def myctf(self, ctx):
 		ctf = await sql.db.getCTFName(
 			await sql.db.getUserCTFID(ctx.message.author.id, ctx.guild.id)
 		)  # GETS CURRENT CTF NAME
@@ -22,7 +22,7 @@ class CTFSetup(commands.Cog):
 			await sendEmbed(ctx, "Selected CTF", "You are now playing: {}.".format(ctf))
 		else:
 			error = sendErrorMessage(ctx)
-			await error.sendError("E_NOT_SET")
+			await error.sendError("E_CTF_NOT_SET")
 
 	@commands.command()
 	@commands.guild_only()
@@ -49,6 +49,15 @@ class CTFSetup(commands.Cog):
 	@commands.guild_only()
 	async def createctf(self, ctx, *ctfname):
 		ctf = "_".join(ctfname).lower()
+		# returns all CTF names and IDs in a server
+		# (id, 'name')
+		ctf_list = await sql.db.getValidCTFIDs(ctx.message.author.id, ctx.guild.id) 
+		for db_ctf in ctf_list:
+			if ctf == db_ctf[1]:
+				error = sendErrorMessage(ctx)
+				await error.sendError("E_CTF_ALREADY_EXISTS")
+				return
+
 		ctf = await ctx.guild.create_category(ctf)
 		await sql.db.createCTF(ctf.name, ctx.guild.id)
 		await self.setctf(ctx, ctf.name)
@@ -59,6 +68,12 @@ class CTFSetup(commands.Cog):
 		questionTitle = "_".join(questionTitle)
 		authorid = ctx.message.author.id
 		guildid = ctx.guild.id
+		for Q in await sql.db.getCTFQuestions(await sql.db.getUserCTFID(authorid, guildid)):
+			if questionTitle == Q[0]:
+				error = sendErrorMessage(ctx)
+				await error.sendError("E_Q_ALREADY_EXISTS")
+				return
+			
 		ctf = await sql.db.getCTFName(await sql.db.getUserCTFID(authorid, guildid))
 		category = discord.utils.get(ctx.guild.categories, name=ctf)
 		channel = await ctx.guild.create_text_channel(questionTitle, category=category)
@@ -66,23 +81,36 @@ class CTFSetup(commands.Cog):
 			str(channel.name), await sql.db.getUserCTFID(authorid, guildid)
 		)
 
-	pass
 
 	@commands.command()
 	@commands.guild_only()
 	async def markSolved(self, ctx, Q):
 
-		await sql.db.setSolved(
+		try: 
+			await sql.db.setSolved(
 			str(Q), await sql.db.getUserCTFID(ctx.message.author.id, ctx.guild.id)
 		)
+			embed = discord.Embed(title= ctx.author.name + " marked " + Q + " as solved!", color=0x9400D3)
+			embed.set_thumbnail(url="https://res-4.cloudinary.com/crunchbase-production/image/upload/c_lpad,h_256,w_256,f_auto,q_auto:eco/v1397182843/e121315c5563525c7197fadf36fcbb9a.png")
+				
+			await ctx.send("@here")
+			await ctx.send(embed=embed)
+
+		except:
+			error = sendErrorMessage(ctx)
+			await error.sendError("E_Q_NOT_FOUND")	
 
 	@commands.command()
 	@commands.guild_only()
 	async def markUnsolved(self, ctx, Q):
 
-		await sql.db.setUnsolved(
+		try:
+			await sql.db.setUnsolved(
 			str(Q), await sql.db.getUserCTFID(ctx.message.author.id, ctx.guild.id)
 		)
+		except:
+			error = sendErrorMessage(ctx)
+			await error.sendError("E_Q_NOT_FOUND")
 
 	@commands.command()
 	@commands.guild_only()
@@ -105,30 +133,40 @@ class CTFSetup(commands.Cog):
 	@commands.command()
 	@commands.guild_only()
 	async def deleteQ(self, ctx, Q):
-		Q = "_".join(Q)
+		questionTitle = Q.replace(" ", "_").strip()
 		authorid = ctx.message.author.id
 		guildid = ctx.guild.id
-		ctf = await sql.db.getCTFName(await sql.db.getUserCTFID(authorid, guildid))
+		for Q in await sql.db.getCTFQuestions(await sql.db.getUserCTFID(authorid, guildid)):
+			print(questionTitle)
+			print(Q[0])
+			if questionTitle == Q[0]:
+				ctf = await sql.db.getCTFName(await sql.db.getUserCTFID(authorid, guildid))
+				category = discord.utils.get(ctx.guild.categories, name=ctf)
+				channel = discord.utils.get(ctx.guild.text_channels, category=category, name=questionTitle)
+				await channel.delete()
+				await sql.db.delQuestion(
+					str(channel.name), await sql.db.getUserCTFID(authorid, guildid)
+				)
+				return
+		error = sendErrorMessage(ctx)
+		await error.sendError("E_Q_NOT_FOUND")
 
-		category = discord.utils.get(ctx.guild.categories, name=ctf)
-		channel = discord.utils.get(ctx.guild.text_channels, category=category, name=Q)
-		await channel.delete()
-		await sql.db.delQuestion(
-			str(channel.name), await sql.db.getUserCTFID(authorid, guildid)
-		)
+
+		
 
 	@commands.command(hidden=True)
 	@commands.guild_only()
 	@commands.is_owner()
 	async def deletectf(self, ctx, *name):
 		categoryName = "_".join(name).lower()
+		print(categoryName)
 		category = discord.utils.get(ctx.guild.categories, name=categoryName)
 		if category != None:
 			for channel in category.channels:
 				await channel.delete()
 			await category.delete()
 			await sql.db.delQuestion(
-				str(channel.name), await sql.db.getCTFID(categoryName, ctx.guild.id)
+				str(category.name), await sql.db.getCTFID(categoryName, ctx.guild.id)
 			)
 		await sql.db.deleteCTF(categoryName, ctx.guild.id)
 
