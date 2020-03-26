@@ -1,20 +1,22 @@
+import asyncio
+import json
 import sys
 import traceback
-import json
+
 import discord
-import asyncio
-from creds import getDiscordAPIKeys
-from discord.ext import tasks, commands
-from errors import sendErrorMessage
-#--------------------------------------
+from discord.ext import commands, tasks
+
 import sql
+from creds import getDiscordAPIKeys
+from errors import sendErrorMessage
 
 sql.init()
 
 def start(loop):
-  
-  loop.create_task(sql.db.createPool(loop))
-  
+
+	loop.create_task(sql.db.createPool(loop))
+
+
 loop = asyncio.get_event_loop()
 start(loop)
 
@@ -22,12 +24,14 @@ start(loop)
 try:
 	TOKEN = getDiscordAPIKeys()
 except:
-	raise ValueError("You need to supply a keys.txt file. Instructions can be found in the README.md file")
+	raise ValueError(
+		"You need to supply a keys.txt file. Instructions can be found in the README.md file"
+	)
 
 
 async def get_prefix(bot, message):
 	"""A callable Prefix for our bot. This could be edited to allow per server prefixes."""
-	
+
 	# Notice how you can use spaces in prefixes. Try to keep them simple though.
 	prefixes = ["!ctf "]
 
@@ -46,11 +50,10 @@ initial_extensions = [
 	"cogs.ctf_utility_commands",
 	"cogs.owner_commands",
 	"cogs.ctftime_stats",
-	"cogs.helpCog"
+	"cogs.helpCog",
 ]
 
-bot = commands.Bot(command_prefix=get_prefix,
-                   description="The cog enabled rewrite")
+bot = commands.Bot(command_prefix=get_prefix, description="The cog enabled rewrite")
 
 if __name__ == "__main__":
 	bot.remove_command("help")
@@ -63,20 +66,29 @@ async def on_ready():
 	print(
 		f"\n\nLogged in as: {bot.user.name} - {bot.user.id}\nVersion: {discord.__version__}\n"
 	)
-	
+
 	# Changes our bots Playing Status. type=1(streaming) for a standard game you could remove type and url.
 	print(f"Ready to Party.")
-	
-@bot.event
-async def on_guild_join(guild):
-	await sql.db.addGuild(guild.id,guild.name)
+	print("SQL initialized and loop started")
+	for guild in bot.guilds:
+		guild_in_db = await sql.db.getGuildByID(guild.id)
+		if guild_in_db == None:
+			print("GUILD ERROR: " + str(guild.id))
+			await sql.db.addGuild(guild.id, guild.name)
+			print("GUILD " + str(guild.id) + " added to DB")
 
 @bot.event
-async def on_command_error(ctx, errormsg):
-	"""The event triggered when an error is raised while invoking a command.
-	ctx   : Context
-	error : Exception"""
-	error = sendErrorMessage(ctx)
-	await error.sendError(errormsg)
+async def on_guild_join(guild):
+	await sql.db.addGuild(guild.id, guild.name)
+
+
+# @bot.event
+# async def on_command_error(ctx, errormsg):
+# 	"""The event triggered when an error is raised while invoking a command.
+# 	ctx   : Context
+# 	error : Exception"""
+# 	error = sendErrorMessage(ctx)
+# 	await error.sendError(errormsg)
+
 
 bot.run(TOKEN, bot=True)
