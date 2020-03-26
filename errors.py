@@ -38,7 +38,7 @@ class sendErrorMessage:
 			"E_Q_NOT_FOUND": "That Q doesn't exist, maybe you mispelled it.",
 			"E_Q_ALREADY_EXISTS": "A Q with that name already exists.",
 			"E_TEAM_ID_NOT_SET": "You haven't set your team ID. Please set it with !ctf setID [id]",
-			"E_GENERIC": "An unknown error occured. The developers have been notified and the bot will now restart.",
+			"E_GENERIC": "An unknown error occured. The developers have been notified.",
 			"": "E_[...] Expectant an Error, no errorcode defined.",
 		}
 		return errors[errorcode]

@@ -10,17 +10,6 @@ import sql
 from creds import getDiscordAPIKeys
 from errors import sendErrorMessage
 
-sql.init()
-
-def start(loop):
-
-	loop.create_task(sql.db.createPool(loop))
-
-
-loop = asyncio.get_event_loop()
-start(loop)
-
-
 try:
 	TOKEN = getDiscordAPIKeys()
 except:
@@ -55,27 +44,28 @@ initial_extensions = [
 
 bot = commands.Bot(command_prefix=get_prefix, description="The cog enabled rewrite")
 
-if __name__ == "__main__":
-	bot.remove_command("help")
-	for extension in initial_extensions:
-		bot.load_extension(extension)
+def loadDB():
+	sql.init()
+	async_loop = asyncio.get_event_loop()
+	async_loop.create_task(sql.db.createPool(async_loop))
+
 
 
 @bot.event
 async def on_ready():
 	print(
-		f"\n\nLogged in as: {bot.user.name} - {bot.user.id}\nVersion: {discord.__version__}\n"
+		f"\nLogged in as: {bot.user.name} - {bot.user.id}\nVersion: {discord.__version__}\n"
 	)
 
 	# Changes our bots Playing Status. type=1(streaming) for a standard game you could remove type and url.
 	print(f"Ready to Party.")
-	print("SQL initialized and loop started")
 	for guild in bot.guilds:
 		guild_in_db = await sql.db.getGuildByID(guild.id)
 		if guild_in_db == None:
 			print("GUILD ERROR: " + str(guild.id))
 			await sql.db.addGuild(guild.id, guild.name)
 			print("GUILD " + str(guild.id) + " added to DB")
+
 
 @bot.event
 async def on_guild_join(guild):
@@ -90,6 +80,12 @@ async def on_command_error(ctx, errormsg):
 	error = sendErrorMessage(ctx)
 	print(errormsg)
 	await error.sendError("E_GENERIC")
+
+if __name__ == "__main__":
+	loadDB()
+	bot.remove_command("help")
+	for extension in initial_extensions:
+		bot.load_extension(extension)
 
 
 bot.run(TOKEN, bot=True)
