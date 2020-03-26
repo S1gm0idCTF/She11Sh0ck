@@ -125,7 +125,7 @@ class database:
 		async with self.pool.acquire() as conn:
 			async with conn.cursor() as cur:
 				await cur.execute(sql)
-				return await cur.fetchall()
+				return await cur.fetchone()
 
 		# self.pool.close()
 		# await self.pool.wait_closed()

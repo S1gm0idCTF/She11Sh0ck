@@ -1,13 +1,18 @@
-import discord
 import asyncio
+
+import discord
 from discord.ext import commands
 
 timeout = 5
 
-class sendErrorMessage():
+
+class sendErrorMessage:
 	def __init__(self, channel):
-		self.embed = discord.Embed(title="# {}".format(str(
-			channel)), description="!Something Went Wrong", color=0x9400D3)
+		self.embed = discord.Embed(
+			title="# {}".format(str(channel)),
+			description="!Something Went Wrong",
+			color=0x9400D3,
+		)
 		self.channel = channel
 
 	async def sendError(self, errorcode):
@@ -15,11 +20,11 @@ class sendErrorMessage():
 			errorcode = self.get_error(errorcode)
 		self.embed.add_field(name="Error:", value=errorcode)
 		self.embed.set_thumbnail(
-			url="https://cdn.pixabay.com/photo/2017/02/12/21/29/false-2061131_960_720.png")
+			url="https://cdn.pixabay.com/photo/2017/02/12/21/29/false-2061131_960_720.png"
+		)
 		message = await self.channel.send(embed=self.embed)
 		await asyncio.sleep(timeout)
 		await message.delete()
-
 	def get_error(self, errorcode):
 		errors = {
 			"E_INVALID_COMMAND": "I've never heard of that command before, have you even read my README.md :(",
@@ -32,7 +37,9 @@ class sendErrorMessage():
 			"E_CTF_ALREADY_MERGED": "This CTF has already been merged or something has gone very, very wrong",
 			"E_Q_NOT_FOUND": "That Q doesn't exist, maybe you mispelled it.",
 			"E_Q_ALREADY_EXISTS": "A Q with that name already exists.",
-			"E_TEAM_ID_NOT_SET" : "You haven't set your team ID. Please set it with !ctf setID [id]",
-			"": "E_[...] Expectant an Error, no errorcode defined."
+			"E_TEAM_ID_NOT_SET": "You haven't set your team ID. Please set it with !ctf setID [id]",
+			"E_GENERIC": "An unknown error occured. The developers have been notified and the bot will now restart.",
+			"": "E_[...] Expectant an Error, no errorcode defined.",
 		}
 		return errors[errorcode]
+

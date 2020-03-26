@@ -1,9 +1,12 @@
 import json
-from errors import sendErrorMessage
+
 import discord
 from discord.ext import commands
-from etc.betterEmbeds import sendEmbed
+
 import sql
+from errors import sendErrorMessage
+from etc.betterEmbeds import sendEmbed
+
 
 class CTFSetup(commands.Cog):
 	def __init__(self, bot):
@@ -15,32 +18,32 @@ class CTFSetup(commands.Cog):
 		ctf = await sql.db.getCTFName(
 			await sql.db.getUserCTFID(ctx.message.author.id, ctx.guild.id)
 		)  # GETS CURRENT CTF NAME
-		await sendEmbed(ctx, "Selected CTF", "{} is the current CTF.".format(ctf))
-
-	pass
+		if ctf is not None:
+			await sendEmbed(ctx, "Selected CTF", "You are now playing: {}.".format(ctf))
+		else:
+			error = sendErrorMessage(ctx)
+			await error.sendError("E_NOT_SET")
 
 	@commands.command()
 	@commands.guild_only()
 	async def setctf(self, ctx, *ctf):
 
-		if len(await sql.db.getMember(ctx.message.author.id, ctx.guild.id)) < 1:
+		if await sql.db.getMember(ctx.message.author.id, ctx.guild.id) is None:
 			await sql.db.addMember(ctx.message.author.id, ctx.guild.id)
 
-		ctfs = await sql.db.getValidCTFIDs(ctx.message.author.id, ctx.guild.id)
-		if len(ctfs) > 0:
-			for dbctf in ctfs:
-				ctfid, ctfname = dbctf[0], dbctf[1]
-				if ctfname == "_".join(ctf).lower():
-					await sql.db.updateCTF(ctx.message.author.id, ctx.guild.id, ctfid)
-					await sendEmbed(
-						ctx,
-						"UPDATE",
-						"You are now participating in {}".format(ctfname.upper()),
-					)
-					return
+		ctf = "_".join(ctf).lower()
+		try:
+			new_ctf_id = await sql.db.getCTFID(ctf, ctx.guild.id)
+		except:
+			error = sendErrorMessage(ctx)
+			await error.sendError("E_CTF_NOT_FOUND")
+			return
+
+		await sql.db.updateCTF(ctx.message.author.id, ctx.guild.id, new_ctf_id)
 		await sendEmbed(
-			ctx, "ERROR", "The CTF `{}` wasn't found.".format("_".join(ctf).upper())
+			ctx, "UPDATE", "You are now participating in: {}".format(ctf.upper()),
 		)
+		return
 
 	@commands.command()
 	@commands.guild_only()
@@ -56,9 +59,7 @@ class CTFSetup(commands.Cog):
 		questionTitle = "_".join(questionTitle)
 		authorid = ctx.message.author.id
 		guildid = ctx.guild.id
-		ctf = await sql.db.getCTFName(
-			await sql.db.getUserCTFID(authorid, guildid)
-		)
+		ctf = await sql.db.getCTFName(await sql.db.getUserCTFID(authorid, guildid))
 		category = discord.utils.get(ctx.guild.categories, name=ctf)
 		channel = await ctx.guild.create_text_channel(questionTitle, category=category)
 		await sql.db.addQuestion(
@@ -107,9 +108,7 @@ class CTFSetup(commands.Cog):
 		Q = "_".join(Q)
 		authorid = ctx.message.author.id
 		guildid = ctx.guild.id
-		ctf = await sql.db.getCTFName(
-			await sql.db.getUserCTFID(authorid, guildid)
-		)
+		ctf = await sql.db.getCTFName(await sql.db.getUserCTFID(authorid, guildid))
 
 		category = discord.utils.get(ctx.guild.categories, name=ctf)
 		channel = discord.utils.get(ctx.guild.text_channels, category=category, name=Q)
@@ -136,4 +135,3 @@ class CTFSetup(commands.Cog):
 
 def setup(bot):
 	bot.add_cog(CTFSetup(bot))
-

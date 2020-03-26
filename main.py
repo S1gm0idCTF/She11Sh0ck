@@ -82,13 +82,14 @@ async def on_guild_join(guild):
 	await sql.db.addGuild(guild.id, guild.name)
 
 
-# @bot.event
-# async def on_command_error(ctx, errormsg):
-# 	"""The event triggered when an error is raised while invoking a command.
-# 	ctx   : Context
-# 	error : Exception"""
-# 	error = sendErrorMessage(ctx)
-# 	await error.sendError(errormsg)
+@bot.event
+async def on_command_error(ctx, errormsg):
+	"""The event triggered when an error is raised while invoking a command.
+	ctx   : Context
+	error : Exception"""
+	error = sendErrorMessage(ctx)
+	print(errormsg)
+	await error.sendError("E_GENERIC")
 
 
 bot.run(TOKEN, bot=True)
