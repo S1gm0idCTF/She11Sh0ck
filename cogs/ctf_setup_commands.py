@@ -85,32 +85,36 @@ class CTFSetup(commands.Cog):
 	@commands.command()
 	@commands.guild_only()
 	async def markSolved(self, ctx, Q):
+		questionTitle = Q.replace(" ", "_").strip()
+		authorid = ctx.message.author.id
+		guildid = ctx.guild.id
 
-		try: 
-			await sql.db.setSolved(
-			str(Q), await sql.db.getUserCTFID(ctx.message.author.id, ctx.guild.id)
-		)
-			embed = discord.Embed(title= ctx.author.name + " marked " + Q + " as solved!", color=0x9400D3)
-			embed.set_thumbnail(url="https://res-4.cloudinary.com/crunchbase-production/image/upload/c_lpad,h_256,w_256,f_auto,q_auto:eco/v1397182843/e121315c5563525c7197fadf36fcbb9a.png")
+		for Q in await sql.db.getCTFQuestions(await sql.db.getUserCTFID(authorid, guildid)):
+			if questionTitle == Q[0]:
+				await sql.db.setSolved(Q[0] , await sql.db.getUserCTFID(ctx.message.author.id, ctx.guild.id))
+				embed = discord.Embed(title= ctx.author.name + " marked " + Q[0] + " as solved!", color=0x9400D3)
+				embed.set_thumbnail(url="https://res-4.cloudinary.com/crunchbase-production/image/upload/c_lpad,h_256,w_256,f_auto,q_auto:eco/v1397182843/e121315c5563525c7197fadf36fcbb9a.png")
 				
-			await ctx.send("@here")
-			await ctx.send(embed=embed)
-
-		except:
-			error = sendErrorMessage(ctx)
-			await error.sendError("E_Q_NOT_FOUND")	
+				await ctx.send("@here")
+				await ctx.send(embed=embed)
+				return
+		error = sendErrorMessage(ctx)
+		await error.sendError("E_Q_NOT_FOUND")
 
 	@commands.command()
 	@commands.guild_only()
 	async def markUnsolved(self, ctx, Q):
-
-		try:
-			await sql.db.setUnsolved(
-			str(Q), await sql.db.getUserCTFID(ctx.message.author.id, ctx.guild.id)
-		)
-		except:
-			error = sendErrorMessage(ctx)
-			await error.sendError("E_Q_NOT_FOUND")
+		questionTitle = Q.replace(" ", "_").strip()
+		authorid = ctx.message.author.id
+		guildid = ctx.guild.id
+		for Q in await sql.db.getCTFQuestions(await sql.db.getUserCTFID(authorid, guildid)):
+			if questionTitle == Q[0]:
+				await sql.db.setUnsolved(
+				str(Q[0]), await sql.db.getUserCTFID(ctx.message.author.id, ctx.guild.id)
+			)
+				return
+		error = sendErrorMessage(ctx)
+		await error.sendError("E_Q_NOT_FOUND")
 
 	@commands.command()
 	@commands.guild_only()

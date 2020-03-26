@@ -1,8 +1,7 @@
-keys.txt
 creds.py
+creds.json
 *.DS_Store
 test.py
-server_config.json
 __pycache__/
 *.pyc
 .vscode/
