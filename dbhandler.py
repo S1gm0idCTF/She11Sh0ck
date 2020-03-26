@@ -1,6 +1,9 @@
 import asyncio
+
 import aiomysql
+
 from creds import getdb
+
 
 # Connect to server
 class database:
@@ -30,10 +33,10 @@ class database:
 				return r[0]
 		# self.pool.close()
 		# await self.pool.wait_closed()
+
 	async def getCTFID(self, name, guildID):
 		sql = "SELECT ctfid FROM ctfs where `name` = '{}' and `guildid` = '{}'".format(
-			str(name),
-			int(guildID),
+			str(name), int(guildID),
 		)
 		async with self.pool.acquire() as conn:
 			async with conn.cursor() as cur:
@@ -178,6 +181,7 @@ class database:
 
 		# self.pool.close()
 		# await self.pool.wait_closed()
+
 	async def setSolved(self, questionName, CTFID):
 		await self.updateQuestionState(questionName, CTFID, 1)
 
