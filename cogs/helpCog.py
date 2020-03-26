@@ -21,13 +21,9 @@ class helpCog(commands.Cog):
 					"**Admin**\n"
 					+ "\n ⯍Creates a new category with the name given, which is dynamically addressed as a new 'CTF'⯍\n"
 					+ "`!ctf createctf [ctfname]`\n"
-					"\n ⯍Deletes the CTF server from your Discord server, and the bots backend. *Warning: This command selects the active ctf*⯍\n"
-					+ "`!ctf deletectf`\n"
-					"\n ⯍Sets a CTF as 'Active', and allows CTFers to create new commands using the Player Commands listed below⯍\n"
-					+ "`!ctf setctf [ctfname]`\n"
-					"\n ⯍Lists the current ctf, used for diagnostic purposes, and general validation, in case theres two CTFs simultaneously⯍\n"
-					+ "`!ctf currentctf`\n"
-					"\n ⯍Archives the CTF by collapsing every text channel into a single channel in the category #ARCHIVE⯍\n"
+					+ "\n ⯍Deletes the CTF server from your Discord server, and the bots backend.⯍\n"
+					+ "`!ctf deletectf [ctfname]`\n"
+					+ "\n ⯍Archives the CTF by collapsing every text channel into a single channel in the category #ARCHIVE⯍\n"
 					+ "`!ctf archive [ctfname]`\n",
 				)
 
@@ -42,6 +38,10 @@ class helpCog(commands.Cog):
 					+ "`!ctf deleteQ [Question Name]`\n"
 					+ "\n⯍Returns a list of questions that are in the selected CTF server⯍\n"
 					+ "`!ctf ctfQs`\n"
+					+ "\n⯍Sets your CTF to the selected CTF⯍\n"
+					+ "`!ctf setctf [ctfname]`\n"
+					+ "\n⯍Checks what CTF you are currently playing⯍\n"
+					+ "`!ctf myctf`\n"
 					+ "\n⯍Marks the Question as solved, in the selected CTF server⯍\n"
 					+ "`!ctf markSolved [Question Name]`\n"
 					+ "\n⯍Marks the Question as unsolved, in the selected CTF server⯍\n"
