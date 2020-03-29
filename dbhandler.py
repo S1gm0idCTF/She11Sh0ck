@@ -88,7 +88,6 @@ class database:
 		# await self.pool.wait_closed()
 
 	async def createCTF(self, ctfName, guildID):
-		print(ctfName)
 		sql = "INSERT INTO ctfs (name, guildid) VALUES ('{}','{}')".format(
 			str(ctfName), int(guildID)
 		)
@@ -98,7 +97,6 @@ class database:
 				await conn.commit()
 
 	async def deleteCTF(self, ctfName, guildID):
-		print("Goodbye {}".format(ctfName))
 		sql = "DELETE FROM `ctfs` WHERE name = '{}' and guildid = '{}'".format(
 			str(ctfName), int(guildID)
 		)
@@ -175,7 +173,6 @@ class database:
 		sql = "INSERT INTO guilds (guildid, guildname) VALUES ('{}','{}')".format(
 			int(guildid), str(guildname)
 		)
-		print(sql)
 		async with self.pool.acquire() as conn:
 			async with conn.cursor() as cur:
 				await cur.execute(sql)

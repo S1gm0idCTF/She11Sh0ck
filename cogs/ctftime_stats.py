@@ -18,7 +18,6 @@ class CTFSetup(commands.Cog):
 	@commands.command()
 	@commands.guild_only()
 	async def teamstats(self, ctx):
-		print((await sql.db.getGuildTeamID(ctx.guild.id))[0])
 		if (await sql.db.getGuildTeamID(ctx.guild.id))[0] == 0:
 			error = sendErrorMessage(ctx)
 			await error.sendError("E_TEAM_ID_NOT_SET")

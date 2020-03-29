@@ -167,8 +167,6 @@ class CTFSetup(commands.Cog):
 			for Q in await sql.db.getCTFQuestions(
 				await sql.db.getUserCTFID(authorid, guildid)
 			):
-				print(questionTitle)
-				print(Q[0])
 				if questionTitle == Q[0]:
 					ctf = await sql.db.getCTFName(
 						await sql.db.getUserCTFID(authorid, guildid)
@@ -191,7 +189,6 @@ class CTFSetup(commands.Cog):
 	@commands.is_owner()
 	async def deletectf(self, ctx, *name):
 		categoryName = "_".join(name).lower().strip()
-		print(categoryName)
 		category = discord.utils.get(ctx.guild.categories, name=categoryName)
 		if category != None:
 			for channel in category.channels:
