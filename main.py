@@ -44,11 +44,6 @@ initial_extensions = [
 
 bot = commands.Bot(command_prefix=get_prefix, description="The cog enabled rewrite")
 
-sql.init()
-async_loop = asyncio.get_event_loop()
-async_loop.create_task(sql.db.createPool(async_loop))
-
-
 
 @bot.event
 async def on_ready():
@@ -80,10 +75,15 @@ async def on_command_error(ctx, errormsg):
 	print(errormsg)
 	await error.sendError("E_GENERIC")
 
+
 if __name__ == "__main__":
+	sql.init()
+	async_loop = asyncio.get_event_loop()
+	async_loop.create_task(sql.db.createPool(async_loop))
+	print("SQL DB STARTED")
+
 	bot.remove_command("help")
 	for extension in initial_extensions:
 		bot.load_extension(extension)
 
-
-bot.run(TOKEN, bot=True)
+	bot.run(TOKEN, bot=True)

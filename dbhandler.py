@@ -8,7 +8,7 @@ from creds import getdb
 # Connect to server
 class database:
 	def __init__(self):
-		print("SQL DB STARTED")
+		pass
 
 	async def createPool(self, loop):
 		dbcreds = getdb()
