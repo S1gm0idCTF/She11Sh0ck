@@ -21,6 +21,7 @@ class CTFSetup(commands.Cog):
 			)  # GETS CURRENT CTF NAME
 			if ctf is not None:
 				await sendEmbed(ctx, "Selected CTF", "You are now playing: {}.".format(ctf))
+			else:
 				error = sendErrorMessage(ctx)
 				await error.sendError("E_CTF_NOT_SET")
 		except:
