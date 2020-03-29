@@ -102,9 +102,13 @@ class database:
 		sql = "DELETE FROM `ctfs` WHERE name = '{}' and guildid = '{}'".format(
 			str(ctfName), int(guildID)
 		)
+		sql2 = "DELETE FROM `ctfQuestions` WHERE ctfid ='{}'".format(
+			await self.getCTFID(ctfName, guildID)
+		)
 		async with self.pool.acquire() as conn:
 			async with conn.cursor() as cur:
 				await cur.execute(sql)
+				await cur.execute(sql2)
 				await conn.commit()
 			# self.pool.close()
 			# await self.pool.wait_closed()
@@ -113,6 +117,28 @@ class database:
 		sql = "SELECT guildid, guildname from guilds where guildid={}".format(
 			int(guildid)
 		)
+		async with self.pool.acquire() as conn:
+			async with conn.cursor() as cur:
+				await cur.execute(sql)
+				return await cur.fetchone()
+
+		# self.pool.close()
+		# await self.pool.wait_closed()
+
+	async def setGuildTeamID(self, teamid, guildid):
+		sql = "UPDATE `guilds` set `ctfteamid`='{}' WHERE guildid='{}'".format(
+			int(teamid), int(guildid)
+		)
+		async with self.pool.acquire() as conn:
+			async with conn.cursor() as cur:
+				await cur.execute(sql)
+				await conn.commit()
+
+		# self.pool.close()
+		# await self.pool.wait_closed()
+
+	async def getGuildTeamID(self, guildid):
+		sql = "SELECT ctfteamid from guilds where guildid='{}'".format(int(guildid))
 		async with self.pool.acquire() as conn:
 			async with conn.cursor() as cur:
 				await cur.execute(sql)
