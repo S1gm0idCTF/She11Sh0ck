@@ -3,7 +3,7 @@ import json
 with open("creds.json") as f:
 	creds = json.load(f)
 
-def getdb():
+def getcreds():
 	return creds
 
 def getDiscordAPIKeys():

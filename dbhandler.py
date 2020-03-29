@@ -2,7 +2,7 @@ import asyncio
 
 import aiomysql
 
-from creds import getdb
+from creds import getcreds
 
 
 # Connect to server
@@ -11,7 +11,7 @@ class database:
 		pass
 
 	async def createPool(self, loop):
-		dbcreds = getdb()
+		dbcreds = getcreds()
 		self.pool = await aiomysql.create_pool(
 			host=dbcreds["host"],
 			port=dbcreds["port"],
