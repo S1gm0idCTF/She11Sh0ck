@@ -159,7 +159,7 @@ class database:
 		# self.pool.close()
 		# await self.pool.wait_closed()
 
-	async def addMember(self, uuid, guildid):
+	async def addber(self, uuid, guildid):
 		sql = "INSERT INTO members (uuid,guildid, activectf) VALUES ('{}','{}','{}')".format(
 			int(uuid), int(guildid), 0
 		)
@@ -172,7 +172,7 @@ class database:
 		# await self.pool.wait_closed()
 
 	async def addGuild(self, guildid, guildname):
-		sql = "INSERT INTO guilds (guildid, guildname) VALUES ('{}','{}')".format(
+		sql = "INSERT INTO guilds (guildid, guildname, ctfteamid) VALUES ('{}','{}', 0)".format(
 			int(guildid), str(guildname)
 		)
 		async with self.pool.acquire() as conn:

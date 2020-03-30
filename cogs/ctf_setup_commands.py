@@ -145,17 +145,15 @@ class CTFSetup(commands.Cog):
 	@commands.command()
 	@commands.guild_only()
 	async def ctfQs(self, ctx):
-		i = 0
 		send = ""
 		questionList = await sql.db.getCTFQuestions(
 			await sql.db.getUserCTFID(ctx.message.author.id, ctx.message.guild.id)
 		)
-		for question in questionList:
-			if question[1] > 0:
+		for i, question in enumerate(questionList):
+			if question[1] > 0: # if question is solved
 				send += "[{}] ".format(i) + "~~**" + question[0] + "**~~\n"
 			else:
 				send += "[{}] ".format(i) + question[0] + "\n"
-			i = i + 1
 
 		await sendEmbed(ctx, "Current Questions:", send)
 		pass

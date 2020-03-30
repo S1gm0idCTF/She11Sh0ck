@@ -14,7 +14,7 @@ try:
 	TOKEN = getDiscordAPIKeys()
 except:
 	raise ValueError(
-		"You need to supply a keys.txt file. Instructions can be found in the README.md file"
+		"You need to supply a creds.json file. Instructions can be found in the README.md file"
 	)
 
 
