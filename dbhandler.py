@@ -159,7 +159,7 @@ class database:
 		# self.pool.close()
 		# await self.pool.wait_closed()
 
-	async def addber(self, uuid, guildid):
+	async def addMember(self, uuid, guildid):
 		sql = "INSERT INTO members (uuid,guildid, activectf) VALUES ('{}','{}','{}')".format(
 			int(uuid), int(guildid), 0
 		)
