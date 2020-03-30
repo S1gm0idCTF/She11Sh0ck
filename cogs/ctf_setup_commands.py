@@ -16,14 +16,17 @@ class CTFSetup(commands.Cog):
 	@commands.guild_only()
 	async def myctf(self, ctx):
 		try:
-			ctf = await sql.db.getCTFName(
-				await sql.db.getUserCTFID(ctx.message.author.id, ctx.guild.id)
-			)  # GETS CURRENT CTF NAME
-			if ctf is not None:
-				await sendEmbed(ctx, "Selected CTF", "You are now playing: {}.".format(ctf))
-			else:
+			if await sql.db.getUserCTFID(ctx.message.author.id, ctx.guild.id) == 0:
 				error = sendErrorMessage(ctx)
 				await error.sendError("E_CTF_NOT_SET")
+			else:
+				ctf = await sql.db.getCTFName(
+					await sql.db.getUserCTFID(ctx.message.author.id, ctx.guild.id)
+				)  # GETS CURRENT CTF NAME
+				if ctf is not None:
+					await sendEmbed(
+						ctx, "Selected CTF", "You are now playing: {}.".format(ctf)
+					)
 		except:
 			error = sendErrorMessage(ctx)
 			await error.sendError("E_CTF_NOT_IN_DB")
@@ -73,13 +76,20 @@ class CTFSetup(commands.Cog):
 		authorid = ctx.message.author.id
 		guildid = ctx.guild.id
 		try:
-			for Q in await sql.db.getCTFQuestions(
-				await sql.db.getUserCTFID(authorid, guildid)
-			):
-				if questionTitle.lower() == Q[0]:
-					error = sendErrorMessage(ctx)
-					await error.sendError("E_Q_ALREADY_EXISTS")
-					return
+			print(
+				await sql.db.getCTFQuestions(
+					await sql.db.getUserCTFID(authorid, guildid)
+				)
+			)
+			if questionTitle in [
+				Q[0]
+				for Q in await sql.db.getCTFQuestions(
+					await sql.db.getUserCTFID(authorid, guildid)
+				)
+			]:
+				error = sendErrorMessage(ctx)
+				await error.sendError("E_Q_ALREADY_EXISTS")
+				return
 
 			ctf = await sql.db.getCTFName(await sql.db.getUserCTFID(authorid, guildid))
 			category = discord.utils.get(ctx.guild.categories, name=ctf)
@@ -100,26 +110,23 @@ class CTFSetup(commands.Cog):
 		authorid = ctx.message.author.id
 		guildid = ctx.guild.id
 
-		for Q in await sql.db.getCTFQuestions(
-			await sql.db.getUserCTFID(authorid, guildid)
-		):
-			if questionTitle == Q[0]:
-				await sql.db.setSolved(
-					Q[0], await sql.db.getUserCTFID(ctx.message.author.id, ctx.guild.id)
-				)
-				embed = discord.Embed(
-					title=ctx.author.name + " marked " + Q[0] + " as solved!",
-					color=0x9400D3,
-				)
-				embed.set_thumbnail(
-					url="https://res-4.cloudinary.com/crunchbase-production/image/upload/c_lpad,h_256,w_256,f_auto,q_auto:eco/v1397182843/e121315c5563525c7197fadf36fcbb9a.png"
-				)
+		try:
+			await sql.db.setSolved(
+				questionTitle, await sql.db.getUserCTFID(authorid, guildid)
+			)
+			embed = discord.Embed(
+				title=ctx.author.name + " marked " + Q[0] + " as solved!",
+				color=0x9400D3,
+			)
+			embed.set_thumbnail(
+				url="https://res-4.cloudinary.com/crunchbase-production/image/upload/c_lpad,h_256,w_256,f_auto,q_auto:eco/v1397182843/e121315c5563525c7197fadf36fcbb9a.png"
+			)
 
-				await ctx.send("@here")
-				await ctx.send(embed=embed)
-				return
-		error = sendErrorMessage(ctx)
-		await error.sendError("E_Q_NOT_FOUND")
+			await ctx.send("@here")
+			await ctx.send(embed=embed)
+		except:
+			error = sendErrorMessage(ctx)
+			await error.sendError("E_Q_NOT_FOUND")
 
 	@commands.command()
 	@commands.guild_only()
@@ -127,17 +134,13 @@ class CTFSetup(commands.Cog):
 		questionTitle = Q.replace(" ", "_").lower().strip()
 		authorid = ctx.message.author.id
 		guildid = ctx.guild.id
-		for Q in await sql.db.getCTFQuestions(
-			await sql.db.getUserCTFID(authorid, guildid)
-		):
-			if questionTitle == Q[0]:
-				await sql.db.setUnsolved(
-					str(Q[0]),
-					await sql.db.getUserCTFID(ctx.message.author.id, ctx.guild.id),
-				)
-				return
-		error = sendErrorMessage(ctx)
-		await error.sendError("E_Q_NOT_FOUND")
+		try:
+			await sql.db.setUnsolved(
+				questionTitle, await sql.db.getUserCTFID(authorid, guildid)
+			)
+		except:
+			error = sendErrorMessage(ctx)
+			await error.sendError("E_Q_NOT_FOUND")
 
 	@commands.command()
 	@commands.guild_only()
@@ -168,10 +171,10 @@ class CTFSetup(commands.Cog):
 				await sql.db.getUserCTFID(authorid, guildid)
 			):
 				if questionTitle == Q[0]:
-					ctf = await sql.db.getCTFName(
+					ctf_name = await sql.db.getCTFName(
 						await sql.db.getUserCTFID(authorid, guildid)
 					)
-					category = discord.utils.get(ctx.guild.categories, name=ctf)
+					category = discord.utils.get(ctx.guild.categories, name=ctf_name)
 					channel = discord.utils.get(
 						ctx.guild.text_channels, category=category, name=questionTitle
 					)

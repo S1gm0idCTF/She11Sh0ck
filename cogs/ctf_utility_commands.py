@@ -2,7 +2,7 @@ import discord
 import urllib.parse
 from etc.betterEmbeds import sendEmbed
 from discord.ext import commands
-from etc.encryptions import *
+from etc.encryptions import * #pylint: disable=unused-wildcard-import
 from etc.pipes import ProcessPipe
 
 pipe = " | "

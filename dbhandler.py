@@ -103,10 +103,12 @@ class database:
 		sql2 = "DELETE FROM `ctfQuestions` WHERE ctfid ='{}'".format(
 			await self.getCTFID(ctfName, guildID)
 		)
+		sql3 = "UPDATE `members` set `activectf`=0 WHERE `activectf`= '{}'".format(await self.getCTFID(ctfName, guildID))
 		async with self.pool.acquire() as conn:
 			async with conn.cursor() as cur:
 				await cur.execute(sql)
 				await cur.execute(sql2)
+				await cur.execute(sql3)
 				await conn.commit()
 			# self.pool.close()
 			# await self.pool.wait_closed()
