@@ -115,7 +115,7 @@ class CTFSetup(commands.Cog):
 				questionTitle, await sql.db.getUserCTFID(authorid, guildid)
 			)
 			embed = discord.Embed(
-				title=ctx.author.name + " marked " + Q[0] + " as solved!",
+				title=ctx.author.name + " marked " + Q + " as solved!",
 				color=0x9400D3,
 			)
 			embed.set_thumbnail(
