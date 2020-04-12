@@ -11,7 +11,7 @@ class sendErrorMessage:
 		self.embed = discord.Embed(
 			title="# {}".format(str(ctx.channel)),
 			description="!Something Went Wrong",
-			color=0x9400D3,
+			color=0xA292C1,
 		)
 		self.channel = ctx.channel
 
@@ -40,7 +40,7 @@ class sendErrorMessage:
 			"E_Q_ALREADY_EXISTS": "A Q with that name already exists.",
 			"E_TEAM_ID_NOT_SET": "You haven't set your team ID. Please set it with !ctf setid [id]",
 			"E_TEAM_ID_WRONG" : "CTFTime doesn't have a team with this ID. Please try re-entering your team ID with !ctf setid [id]. You can find your id in the URL of your team's CTFTime page.",
-			"E_GENERIC": "An unknown error occured. The developers have been notified.",
+			"E_GENERIC": "An unknown error occured. The developers have been notified. (It's possible you just entered the command incorrectly :P )",
 			"": "E_[...] Expectant an Error, no errorcode defined.",
 		}
 		return errors[errorcode]

@@ -38,7 +38,7 @@ class CTFSetup(commands.Cog):
 				)
 				team_name = data["name"]
 				embed = discord.Embed(
-					title="Information about " + team_name, color=0x9400D3
+					title="Information about " + team_name, color=0xA292C1
 				)
 				embed.add_field(name="__Global Ranking__", value=global_rating_place)
 				embed.add_field(name="__Points__", value=global_rating_points)

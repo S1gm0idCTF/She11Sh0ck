@@ -68,7 +68,7 @@ class processMessages():
 
 class betterEmbeds():
 	def __init__(self, category):
-		self.embed = discord.Embed(title="# {}".format(str(category)),description="### Created: {}".format(str(datetime.now())),color=0xFF0000)
+		self.embed = discord.Embed(title="# {}".format(str(category)),description="### Created: {}".format(str(datetime.now())),color=0xA292C1)
 		self.destination = ''
 		self.length = 0
 		self.objectCount = 0

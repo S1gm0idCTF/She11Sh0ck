@@ -35,6 +35,7 @@ initial_extensions = [
 	"cogs.owner_commands",
 	"cogs.ctftime_stats",
 	"cogs.helpCog",
+	"cogs.misc_commands",
 ]
 
 bot = commands.Bot(command_prefix=get_prefix, description="The cog enabled rewrite")

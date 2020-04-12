@@ -38,7 +38,7 @@ class CTFSetup(commands.Cog):
 		if await sql.db.getMember(ctx.message.author.id, ctx.guild.id) is None:
 			await sql.db.addMember(ctx.message.author.id, ctx.guild.id)
 
-		ctf = "_".join(ctf).lower().strip()
+		ctf = "-".join(ctf).lower().strip()
 		try:
 			new_ctf_id = await sql.db.getCTFID(ctf, ctx.guild.id)
 		except:
@@ -55,7 +55,7 @@ class CTFSetup(commands.Cog):
 	@commands.command()
 	@commands.guild_only()
 	async def createctf(self, ctx, *ctfname):
-		ctf = "_".join(ctfname).lower().strip()
+		ctf = "-".join(ctfname).lower().strip()
 		# returns all CTF names and IDs in a server
 		# (id, 'name')
 		ctf_list = await sql.db.getValidCTFIDs(ctx.message.author.id, ctx.guild.id)
@@ -72,7 +72,7 @@ class CTFSetup(commands.Cog):
 	@commands.command()
 	@commands.guild_only()
 	async def addQ(self, ctx, *questionTitle):
-		questionTitle = "_".join(questionTitle).lower().strip()
+		questionTitle = "-".join(questionTitle).lower().strip()
 		authorid = ctx.message.author.id
 		guildid = ctx.guild.id
 		try:
@@ -106,7 +106,7 @@ class CTFSetup(commands.Cog):
 	@commands.command()
 	@commands.guild_only()
 	async def markSolved(self, ctx, Q):
-		questionTitle = Q.replace(" ", "_").lower().strip()
+		questionTitle = Q.replace(" ", "-").lower().strip()
 		authorid = ctx.message.author.id
 		guildid = ctx.guild.id
 
@@ -116,7 +116,7 @@ class CTFSetup(commands.Cog):
 			)
 			embed = discord.Embed(
 				title=ctx.author.name + " marked " + Q + " as solved!",
-				color=0x9400D3,
+				color=0xA292C1,
 			)
 			embed.set_thumbnail(
 				url="https://res-4.cloudinary.com/crunchbase-production/image/upload/c_lpad,h_256,w_256,f_auto,q_auto:eco/v1397182843/e121315c5563525c7197fadf36fcbb9a.png"
@@ -131,7 +131,7 @@ class CTFSetup(commands.Cog):
 	@commands.command()
 	@commands.guild_only()
 	async def markUnsolved(self, ctx, Q):
-		questionTitle = Q.replace(" ", "_").lower().strip()
+		questionTitle = Q.replace(" ", "-").lower().strip()
 		authorid = ctx.message.author.id
 		guildid = ctx.guild.id
 		try:
@@ -161,7 +161,7 @@ class CTFSetup(commands.Cog):
 	@commands.command()
 	@commands.guild_only()
 	async def deleteQ(self, ctx, Q):
-		questionTitle = Q.replace(" ", "_").lower().strip()
+		questionTitle = Q.replace(" ", "-").lower().strip()
 		authorid = ctx.message.author.id
 		guildid = ctx.guild.id
 		try:
@@ -189,7 +189,7 @@ class CTFSetup(commands.Cog):
 	@commands.guild_only()
 	@commands.is_owner()
 	async def deletectf(self, ctx, *name):
-		categoryName = "_".join(name).lower().strip()
+		categoryName = "-".join(name).lower().strip()
 		category = discord.utils.get(ctx.guild.categories, name=categoryName)
 		if category != None:
 			for channel in category.channels:
