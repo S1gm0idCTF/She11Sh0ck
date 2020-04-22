@@ -55,9 +55,9 @@ class CTFSetup(commands.Cog):
 	@commands.guild_only()
 	async def setid(self, ctx, teamid):
 		await sql.db.setGuildTeamID(teamid, ctx.guild.id)
-	@bot.command()
-	
-	
+
+
+	@commands.command()
 	async def showctfs(self,ctx):
 		headers = {'User-Agent': 'Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:61.0) Gecko/20100101 Firefox/61.0',}
 		upcoming = 'https://ctftime.org/api/v1/events/'
@@ -72,7 +72,7 @@ class CTFSetup(commands.Cog):
 			embed.add_field(name="Duration", value=i["duration"], inline=False)
 			embed.add_field(name="Restrictions", value=i["restrictions"], inline=False)
 			embed.add_field(name="Weight", value=i["weight"], inline=False)
-			await self.bot.say(embed=embed)
+			await ctx.send(embed=embed)
 
 
 def setup(bot):
