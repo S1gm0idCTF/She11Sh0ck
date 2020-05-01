@@ -130,7 +130,7 @@ class CTFSetup(commands.Cog):
 	@commands.command()
 	@commands.guild_only()
 	async def markSolved(self, ctx, *Q):
-		questionTitle = Q.replace(" ", "-").lower().strip()
+		questionTitle = "-".join(Q).lower().strip()
 		authorid = ctx.message.author.id
 		guildid = ctx.guild.id
 
@@ -155,7 +155,7 @@ class CTFSetup(commands.Cog):
 	@commands.command()
 	@commands.guild_only()
 	async def markUnsolved(self, ctx, *Q):
-		questionTitle = Q.replace(" ", "-").lower().strip()
+		questionTitle = "-".join(Q).lower().strip()
 		authorid = ctx.message.author.id
 		guildid = ctx.guild.id
 		try:
@@ -185,7 +185,7 @@ class CTFSetup(commands.Cog):
 	@commands.command()
 	@commands.guild_only()
 	async def deleteQ(self, ctx, *Q):
-		questionTitle = Q.replace(" ", "-").lower().strip()
+		questionTitle = "-".join(Q).lower().strip()
 		authorid = ctx.message.author.id
 		guildid = ctx.guild.id
 		try:
