@@ -68,8 +68,10 @@ class CTFSetup(commands.Cog):
 			embed=discord.Embed(title=i["title"], url=i["url"], description=i["description"], color=0xA292C1)
 			embed.set_author(name="She11Sh0ck")
 			embed.set_thumbnail(url=i["logo"])
-			embed.add_field(name="Starting on ", value=i["start"], inline=False)
-			embed.add_field(name="Duration", value=i["duration"], inline=False)
+			format_start = i["start"][5:7] +"/"+ i["start"][8:10] + "/" + i["start"][0:4] + " at " + i["start"].split("T")[1]
+			embed.add_field(name="Starting on ", value=format_start, inline=False)
+			duration = str((24*int(i["duration"]["days"])) + int(i["duration"]["hours"])) + " hours"
+			embed.add_field(name="Duration", value=duration, inline=False)
 			embed.add_field(name="Restrictions", value=i["restrictions"], inline=False)
 			embed.add_field(name="Weight", value=i["weight"], inline=False)
 			await ctx.send(embed=embed)
