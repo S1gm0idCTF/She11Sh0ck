@@ -75,7 +75,20 @@ class helpCog(commands.Cog):
 					+ "\n⯍Transforms Text valid parameters are:⯍\n*-upper, -lower, -t, -rev(erse), -join, -s[int]*\n"
 					+ "`!ctf trans (parameter) **input**`\n",
 				)
-			elif p[0].lower() == "other" or p[0].lower() == "3":
+			elif p[0].lower().replace(" ", "") == "ctftime" or p[0].lower() == "3":
+				await sendEmbed(
+					ctx,
+					"Help!",
+					"**Other**\n"
+					+ "\n⯍Set Team ID (can be found on CTF Time team page in URL⯍\n"
+					+ "`!ctf setid [id]`\n"
+					+ "\n⯍Get Team Stats⯍\n"
+					+ "`!ctf teamstats`\n"
+					+ "\n⯍Lookup Upcoming CTFs⯍"
+					+ "\n`!ctf showctfs`\n"
+				)
+
+			elif p[0].lower() == "other" or p[0].lower() == "4":
 				await sendEmbed(
 					ctx,
 					"Help!",
@@ -100,7 +113,7 @@ class helpCog(commands.Cog):
 			await sendEmbed(
 				ctx,
 				"Help!",
-				"*!ctf help [Category]*\n ```fix\n ⮞ Admin```\n ```fix\n ⮞ Player```\n ```fix\n ⮞ Cryptography```\n ```fix\n ⮞ Other```\n https://s1gm0idctf.github.io/bot ",
+				"*!ctf help [Category]*\n ```fix\n ⮞ Admin```\n ```fix\n ⮞ Player```\n ```fix\n ⮞ Cryptography```\n ````fix\n ⮞ CTFTime```\n``fix\n ⮞ Other```\n https://s1gm0idctf.github.io/bot ",
 			)
 
 	pass
