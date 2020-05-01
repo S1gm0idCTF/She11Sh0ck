@@ -61,7 +61,7 @@ class CTFSetup(commands.Cog):
 	async def showctfs(self,ctx):
 		headers = {'User-Agent': 'Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:61.0) Gecko/20100101 Firefox/61.0',}
 		upcoming = 'https://ctftime.org/api/v1/events/'
-#limit = '0'
+
 		response = requests.get(upcoming, headers=headers)
 		jdata = response.json()
 		for i in jdata:
