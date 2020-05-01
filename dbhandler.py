@@ -155,7 +155,13 @@ class database:
 			async with conn.cursor() as cur:
 				await cur.execute(sql)
 				return await cur.fetchone()
-
+	
+	async def getAllMembers(self, guildid):
+		sql = "SELECT id, uuid from members where guildid={}".format(int(guildid))
+		async with self.pool.acquire() as conn:
+			async with conn.cursor() as cur:
+				await cur.execute(sql)
+				return await cur.fetchall()
 		# self.pool.close()
 		# await self.pool.wait_closed()
 
