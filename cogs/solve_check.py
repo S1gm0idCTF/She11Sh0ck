@@ -24,7 +24,7 @@ class solveChecker(commands.Cog):
 				for channel in category.channels:
 					messages = await channel.history(limit=20).flatten()
 					for message in messages:
-						if flagFormat in message.content and flagFormat != "PLACEHOLDER_UNTIL_UPDATE_FLAG":
+						if flagFormat in message.content and flagFormat != "PLACEHOLDER_UNTIL_UPDATE_FLAG" and "?" + flagFormat not in message.content:
 							
 							await sql.db.setSolved(channel.name, ctf[0])
 
