@@ -21,6 +21,8 @@ class helpCog(commands.Cog):
 					"**Admin**\n"
 					+ "\n ⯍Creates a new category with the name given, which is dynamically addressed as a new 'CTF'⯍\n"
 					+ "`!ctf createctf [ctfname]`\n"
+					+ "\n ⯍Set the flag for the current CTF for the autochecker⯍\n"
+					+ "`!ctf setFlagFormat flagFormat{`\n"
 					+ "\n ⯍Deletes the CTF server from your Discord server, and the bots backend.⯍\n"
 					+ "`!ctf deletectf [ctfname]`\n"
 					+ "\n ⯍Archives the CTF by collapsing every text channel into a single channel in the category #ARCHIVE⯍\n"
