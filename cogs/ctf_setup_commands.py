@@ -72,7 +72,7 @@ class CTFSetup(commands.Cog):
 
 		ctx.send("@everyone")
 		await sendEmbed(
-			ctx, "UPDATE", "The default CTF is now: {}".format(ctf.upper()),
+			ctx, "UPDATE", "The default CTF is now: {}".format(ctf),
 		)
 		return
 
@@ -169,7 +169,7 @@ class CTFSetup(commands.Cog):
 	@commands.command()
 	@commands.guild_only()
 	async def setFlagFormat(self, ctx, *flagFormat):
-		flagFormat = "-".join(flagFormat).lower().strip()
+		flagFormat = "-".join(flagFormat).strip()
 		guildid = ctx.guild.id
 		authorid = ctx.message.author.id
 		try:
