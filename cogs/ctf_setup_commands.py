@@ -168,11 +168,12 @@ class CTFSetup(commands.Cog):
 
 	@commands.command()
 	@commands.guild_only()
-	async def setFormat(self, ctx, *flagFormat):
+	async def setFlagFormat(self, ctx, *flagFormat):
 		flagFormat = "-".join(flagFormat).lower().strip()
 		guildid = ctx.guild.id
+		authorid = ctx.message.author.id
 		try:
-			await sql.db.setFlagFormat(
+			await sql.db.updateFlagFormat(
 				flagFormat, await sql.db.getUserCTFID(authorid, guildid)
 			)
 		except:

@@ -75,8 +75,8 @@ class database:
 				return r
 		# self.pool.close()
 		# await self.pool.wait_closed()
-	async def getAllGuildCTFIDs(self, GuildID):
-		sql = "SELECT FROM ctfs WHERE `guildid` = '{}'".format(int(GuildID))
+	async def getAllGuildCTFDATA(self, GuildID):
+		sql = "SELECT ctfid, name, flagFormat FROM ctfs WHERE `guildid` = '{}'".format(int(GuildID))
 		async with self.pool.acquire() as conn:
 			async with conn.cursor() as cur:
 				await cur.execute(sql)
@@ -220,14 +220,24 @@ class database:
 		# self.pool.close()
 		# await self.pool.wait_closed()
 
-	async def updateFlagFormat(self, CTFID, flagFormat):
-		sql = "UPDATE `ctfQuestions` SET `flagFormat`='{}' WHERE CTFID='{}'".format(
+	async def updateFlagFormat(self, flagFormat, CTFID):
+		sql = "UPDATE `ctfs` SET `flagFormat`='{}' WHERE ctfid='{}'".format(
 			str(flagFormat), int(CTFID)
 		)
 		async with self.pool.acquire() as conn:
 			async with conn.cursor() as cur:
 				await cur.execute(sql)
 				await conn.commit()
+	
+	async def getFlagFormat(self, CTFID):
+		sql = "SELECT `flagFormat` from ctfs WHERE ctfid='{}'".format(
+			int(CTFID)
+		)
+		async with self.pool.acquire() as conn:
+			async with conn.cursor() as cur:
+				await cur.execute(sql)
+				return await cur.fetchone()
+
 
 
 	async def setSolved(self, questionName, CTFID):
