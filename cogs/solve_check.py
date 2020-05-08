@@ -12,7 +12,7 @@ class solveChecker(commands.Cog):
 		self.bot = bot
 		self.solveCheck.start()
 
-	@tasks.loop(seconds=30.0)
+	@tasks.loop(seconds=600.0)
 	async def solveCheck(self):
 		for guild in self.bot.guilds:
 			ctfs = await sql.db.getAllGuildCTFDATA(guild.id)
