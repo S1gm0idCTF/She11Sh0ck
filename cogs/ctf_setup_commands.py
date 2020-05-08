@@ -51,6 +51,30 @@ class CTFSetup(commands.Cog):
 			ctx, "UPDATE", "You are now participating in: {}".format(ctf.upper()),
 		)
 		return
+	
+	@commands.command()
+	@commands.guild_only()
+	async def setdefaultctf(self, ctx, *ctf):
+
+		if await sql.db.getMember(ctx.message.author.id, ctx.guild.id) is None:
+			await sql.db.addMember(ctx.message.author.id, ctx.guild.id)
+
+		ctf = "-".join(ctf).lower().strip()
+		try:
+			new_ctf_id = await sql.db.getCTFID(ctf, ctx.guild.id)
+		except:
+			error = sendErrorMessage(ctx)
+			await error.sendError("E_CTF_NOT_FOUND")
+			return
+		
+		for ele in await sql.db.getAllMembers(ctx.guild.id):
+			await sql.db.updateCTF(ele[1], ctx.guild.id, new_ctf_id)
+
+		ctx.send("@everyone")
+		await sendEmbed(
+			ctx, "UPDATE", "The default CTF is now: {}".format(ctf.upper()),
+		)
+		return
 
 	@commands.command()
 	@commands.guild_only()
@@ -105,8 +129,8 @@ class CTFSetup(commands.Cog):
 
 	@commands.command()
 	@commands.guild_only()
-	async def markSolved(self, ctx, Q):
-		questionTitle = Q.replace(" ", "-").lower().strip()
+	async def markSolved(self, ctx, *Q):
+		questionTitle = "-".join(Q).lower().strip()
 		authorid = ctx.message.author.id
 		guildid = ctx.guild.id
 
@@ -115,7 +139,7 @@ class CTFSetup(commands.Cog):
 				questionTitle, await sql.db.getUserCTFID(authorid, guildid)
 			)
 			embed = discord.Embed(
-				title=ctx.author.name + " marked " + Q + " as solved!",
+				title=ctx.author.name + " marked " + questionTitle + " as solved!",
 				color=0xA292C1,
 			)
 			embed.set_thumbnail(
@@ -130,8 +154,8 @@ class CTFSetup(commands.Cog):
 
 	@commands.command()
 	@commands.guild_only()
-	async def markUnsolved(self, ctx, Q):
-		questionTitle = Q.replace(" ", "-").lower().strip()
+	async def markUnsolved(self, ctx, *Q):
+		questionTitle = "-".join(Q).lower().strip()
 		authorid = ctx.message.author.id
 		guildid = ctx.guild.id
 		try:
@@ -160,8 +184,8 @@ class CTFSetup(commands.Cog):
 
 	@commands.command()
 	@commands.guild_only()
-	async def deleteQ(self, ctx, Q):
-		questionTitle = Q.replace(" ", "-").lower().strip()
+	async def deleteQ(self, ctx, *Q):
+		questionTitle = "-".join(Q).lower().strip()
 		authorid = ctx.message.author.id
 		guildid = ctx.guild.id
 		try:

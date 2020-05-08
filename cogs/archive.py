@@ -80,7 +80,7 @@ class betterEmbeds():
 			return True
 
 	async def reInitialize(self,textChannelName):
-		self.embed = discord.Embed(title="\n",description="\n",color=0xFF0000)
+		self.embed = discord.Embed(title="\n",description="\n",color=0xA292C1)
 		self.length = 0
 		self.objectCount = 0
 		self.imageCount = 0
