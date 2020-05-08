@@ -168,6 +168,19 @@ class CTFSetup(commands.Cog):
 
 	@commands.command()
 	@commands.guild_only()
+	async def setFormat(self, ctx, *flagFormat):
+		flagFormat = "-".join(flagFormat).lower().strip()
+		guildid = ctx.guild.id
+		try:
+			await sql.db.setFlagFormat(
+				flagFormat, await sql.db.getUserCTFID(authorid, guildid)
+			)
+		except:
+			error = sendErrorMessage(ctx)
+			await error.sendError("E_CTF_NOT_SET")
+
+	@commands.command()
+	@commands.guild_only()
 	async def ctfQs(self, ctx):
 		send = ""
 		questionList = await sql.db.getCTFQuestions(

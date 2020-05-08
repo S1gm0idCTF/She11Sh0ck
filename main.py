@@ -34,6 +34,7 @@ initial_extensions = [
 	"cogs.ctf_utility_commands",
 	"cogs.owner_commands",
 	"cogs.ctftime_stats",
+	"cogs.solve_check",
 	"cogs.helpCog",
 	"cogs.misc_commands",
 ]

@@ -75,6 +75,13 @@ class database:
 				return r
 		# self.pool.close()
 		# await self.pool.wait_closed()
+	async def getAllGuildCTFIDs(self, GuildID):
+		sql = "SELECT FROM ctfs WHERE `guildid` = '{}'".format(int(GuildID))
+		async with self.pool.acquire() as conn:
+			async with conn.cursor() as cur:
+				await cur.execute(sql)
+				(r) = await cur.fetchall()
+				return r
 
 	async def updateCTF(self, DiscordID, GuildID, CTFID):
 		sql = "UPDATE `members` SET `activectf`={} WHERE uuid={} and guildid={}".format(
@@ -88,8 +95,8 @@ class database:
 		# await self.pool.wait_closed()
 
 	async def createCTF(self, ctfName, guildID):
-		sql = "INSERT INTO ctfs (name, guildid) VALUES ('{}','{}')".format(
-			str(ctfName), int(guildID)
+		sql = "INSERT INTO ctfs (name, guildid, flagFormat) VALUES ('{}','{}','{}')".format(
+			str(ctfName), int(guildID), "PLACEHOLDER_UNTIL_UPDATE_FLAG"
 		)
 		async with self.pool.acquire() as conn:
 			async with conn.cursor() as cur:
@@ -212,6 +219,16 @@ class database:
 
 		# self.pool.close()
 		# await self.pool.wait_closed()
+
+	async def updateFlagFormat(self, CTFID, flagFormat):
+		sql = "UPDATE `ctfQuestions` SET `flagFormat`='{}' WHERE CTFID='{}'".format(
+			str(flagFormat), int(CTFID)
+		)
+		async with self.pool.acquire() as conn:
+			async with conn.cursor() as cur:
+				await cur.execute(sql)
+				await conn.commit()
+
 
 	async def setSolved(self, questionName, CTFID):
 		await self.updateQuestionState(questionName, CTFID, 1)
