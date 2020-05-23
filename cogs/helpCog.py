@@ -115,7 +115,7 @@ class helpCog(commands.Cog):
 			await sendEmbed(
 				ctx,
 				"Help!",
-				"*!ctf help [Category]*\n ```fix\n ⮞ Admin```\n ```fix\n ⮞ Player```\n ```fix\n ⮞ Cryptography```\n ````fix\n ⮞ CTFTime```\n``fix\n ⮞ Other```\n https://s1gm0idctf.github.io/bot ",
+				"*!ctf help [Category]*\n ```fix\n ⮞ Admin```\n ```fix\n ⮞ Player```\n ```fix\n ⮞ Cryptography```\n ```fix\n ⮞ CTFTime```\n```fix\n ⮞ Other```\n https://s1gm0idctf.github.io/bot ",
 			)
 
 	pass

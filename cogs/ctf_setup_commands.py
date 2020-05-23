@@ -70,7 +70,7 @@ class CTFSetup(commands.Cog):
 		for ele in await sql.db.getAllMembers(ctx.guild.id):
 			await sql.db.updateCTF(ele[1], ctx.guild.id, new_ctf_id)
 
-		ctx.send("@everyone")
+		await ctx.send("@everyone")
 		await sendEmbed(
 			ctx, "UPDATE", "The default CTF is now: {}".format(ctf),
 		)
