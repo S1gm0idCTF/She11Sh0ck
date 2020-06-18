@@ -54,6 +54,7 @@ class CTFSetup(commands.Cog):
 	
 	@commands.command()
 	@commands.guild_only()
+	@commands.has_guild_permissions(administrator=True)
 	async def setdefaultctf(self, ctx, *ctf):
 
 		if await sql.db.getMember(ctx.message.author.id, ctx.guild.id) is None:
@@ -78,6 +79,7 @@ class CTFSetup(commands.Cog):
 
 	@commands.command()
 	@commands.guild_only()
+	@commands.has_guild_permissions(administrator=True)
 	async def createctf(self, ctx, *ctfname):
 		ctf = "-".join(ctfname).lower().strip()
 		# returns all CTF names and IDs in a server
@@ -168,6 +170,7 @@ class CTFSetup(commands.Cog):
 
 	@commands.command()
 	@commands.guild_only()
+	@commands.has_guild_permissions(administrator=True)
 	async def setFlagFormat(self, ctx, *flagFormat):
 		flagFormat = "-".join(flagFormat).strip()
 		guildid = ctx.guild.id
@@ -225,7 +228,7 @@ class CTFSetup(commands.Cog):
 
 	@commands.command(hidden=True)
 	@commands.guild_only()
-	@commands.is_owner()
+	@commands.has_guild_permissions(administrator=True)
 	async def deletectf(self, ctx, *name):
 		categoryName = "-".join(name).lower().strip()
 		category = discord.utils.get(ctx.guild.categories, name=categoryName)

@@ -1,7 +1,6 @@
-creds.json
-*.DS_Store
-test.py
-__pycache__/
-*.pyc
+# created by virtualenv automatically*
+pyvenv.cfg
 .vscode/
-nohup.out
+__pycache__/
+bin/
+lib/
